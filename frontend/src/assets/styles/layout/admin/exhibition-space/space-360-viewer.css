@@ -1,0 +1,177 @@
+.space360viewer__viewer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: black;
+  flex: 1; /* ✅ Đảm bảo co dãn đầy đủ */
+}
+
+.space360viewer__modal {
+  padding: 0;
+  margin: 0;
+  max-width: 100%;
+}
+
+.space360viewer__body {
+  padding: 0;
+  position: relative;
+  height: 75vh;
+  background-color: black;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.space360viewer__toolbar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  display: flex;
+  gap: 12px;
+}
+
+.space360viewer__icon {
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.space360viewer__icon:hover {
+  transform: scale(1.2);
+}
+
+.space360viewer__fullscreen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  z-index: 9999;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column; /* ✅ QUAN TRỌNG */
+}
+
+.space360viewer__fullscreen .space360viewer__toolbar {
+  position: fixed; /* thêm */
+  top: 20px; /* giữ nguyên */
+  right: 20px; /* giữ nguyên */
+  z-index: 10000; /* đảm bảo nổi trên hết */
+  background: rgba(0, 0, 0, 0.5); /* nếu cần background mờ cho toolbar */
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.space360viewer__fullscreen canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* Marker */
+.space360viewer__marker {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+  transition: box-shadow 0.3s ease, background 0.3s;
+}
+
+/* Không animation chung */
+.space360viewer__marker-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Pulse dành cho MAP marker (to nhỏ nhẹ nhàng) */
+.space360viewer__marker.marker--map .space360viewer__marker-inner {
+  animation: markerPulse 2s infinite;
+}
+
+/* Slide Up-Down dành cho ARROW marker (chuyển cảnh) */
+.space360viewer__marker.marker--arrow .space360viewer__marker-inner {
+  animation: markerShift 1.2s ease-in-out infinite;
+}
+
+.space360viewer__marker-inner img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* 🔵 Map marker */
+.space360viewer__marker.marker--map {
+  background: rgba(0, 0, 0, 0.15);
+}
+.space360viewer__marker.marker--map:hover {
+  background: rgba(40, 167, 69, 0.25);
+  box-shadow: 0 0 10px rgba(40, 167, 69, 0.4);
+}
+
+/* 🔺 Arrow marker */
+.space360viewer__marker.marker--arrow {
+  background: rgba(0, 123, 255, 0.1);
+}
+.space360viewer__marker.marker--arrow:hover {
+  background: rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 12px rgba(0, 123, 255, 0.4);
+}
+
+/* 📌 Tooltip */
+.space360viewer__marker-tooltip {
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+.space360viewer__marker:hover .space360viewer__marker-tooltip {
+  opacity: 1;
+}
+
+@keyframes markerPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes markerShift {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  } /* Đẩy lên */
+  100% {
+    transform: translateY(0);
+  }
+}

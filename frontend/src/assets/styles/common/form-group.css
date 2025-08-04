@@ -1,0 +1,52 @@
+.c-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.c-form-group__label {
+  font-weight: 500;
+  margin: 0.6rem 0 0.2rem 0;
+  color: var(--color-heading);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.c-form-group__input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.c-form-group__input {
+  padding: 0.75rem;
+  padding-right: 2.5rem; /* chừa chỗ cho icon ẩn/hiện */
+  border: 1px solid #ddd;
+  height: 46px; /* cố định chiều cao */
+  border-radius: 4px;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.c-form-group__input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+.c-form-group__input.invalid {
+  border-color: red;
+}
+
+.c-form-group__toggle {
+  position: absolute;
+  right: 10px;
+  color: #888;
+  cursor: pointer;
+  user-select: none;
+}
+
+.c-form-group__error {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}

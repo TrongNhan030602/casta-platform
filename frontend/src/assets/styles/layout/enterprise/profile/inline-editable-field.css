@@ -1,0 +1,84 @@
+.inline-editable {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.inline-editable__input {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.inline-editable__input--textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.inline-editable__actions {
+  display: flex;
+  gap: 6px;
+  margin-left: 4px;
+}
+
+.inline-editable__button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-primary);
+  font-size: 16px;
+  padding: 4px;
+  transition: all 0.2s ease;
+}
+
+.inline-editable__button:hover {
+  color: var(--color-primary-dark);
+  transform: scale(1.03);
+}
+
+.inline-editable--view {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.inline-editable__text {
+  display: inline-block;
+  max-width: 100%;
+  white-space: pre-wrap;
+  word-break: break-word;
+  flex: 1;
+}
+
+.inline-editable__placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+.inline-editable__icon {
+  transition: color 0.2s ease;
+}
+
+.inline-editable__icon--edit {
+  color: var(--color-primary);
+}
+
+.inline-editable__icon--edit:hover {
+  color: var(--color-primary-dark);
+}
+
+.inline-editable__icon--saved {
+  color: green;
+  margin-left: 6px;
+}
+
+.inline-editable--disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}

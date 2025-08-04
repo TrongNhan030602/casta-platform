@@ -1,0 +1,30 @@
+/* 📁 two-column-layout.css hoặc space-info.css */
+.space-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.space-info__group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 2rem;
+}
+
+.space-info__item {
+  display: flex;
+  flex-direction: column;
+}
+
+.space-info__label {
+  font-weight: 600;
+  color: var(--color-heading); /* Chuẩn hóa: nhấn mạnh label */
+  margin-bottom: 0.25rem;
+}
+
+.space-info__value {
+  color: var(--color-text); /* Dễ đọc, chuẩn văn bản chính */
+  word-break: break-word;
+}

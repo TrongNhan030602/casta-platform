@@ -1,0 +1,93 @@
+/* user-detail.css */
+.user-detail-page {
+  padding: 24px;
+  background: var(--color-bg, #f5f5f5);
+  color: var(--color-text, #333);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.user-detail-page .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.user-detail-page .page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-heading, #1a1a1a);
+}
+
+/* Grid 2 cột */
+.user-detail-page .content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Hai cột bằng nhau */
+  gap: 24px;
+}
+
+/* Cột trái và phải */
+.user-detail-page .left-column,
+.user-detail-page .right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.user-detail-page .section {
+  padding: 20px;
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-detail-page .section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-detail-page .section h3 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--color-heading, #1a1a1a);
+  margin-bottom: 16px;
+  border-left: 4px solid var(--color-primary, #007bff);
+  padding-left: 12px;
+}
+
+.user-detail-page .action-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.user-detail-page ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-detail-page ul li {
+  margin-bottom: 12px;
+}
+
+.user-detail-page .log-list li,
+.user-detail-page .violation-list li {
+  padding-bottom: 12px;
+  border-bottom: 1px dashed #ccc;
+}
+
+.user-detail-page .no-data {
+  font-style: italic;
+  color: #666;
+}
+
+/* Responsive: Chuyển về 1 cột trên màn hình nhỏ */
+@media (max-width: 768px) {
+  .user-detail-page .content-grid {
+    grid-template-columns: 1fr;
+  }
+}

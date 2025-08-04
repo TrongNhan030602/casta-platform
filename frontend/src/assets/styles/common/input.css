@@ -1,0 +1,33 @@
+/* Block styling */
+.form-input {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Element inside block */
+.form-input__input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+}
+
+/* Modifier for error */
+.form-input--error .form-input__input {
+  border-color: red;
+}
+
+.form-input__error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Modifier for disabled state */
+.form-input--disabled .form-input__input {
+  background-color: #f0f0f0;
+  border-color: #ddd;
+  cursor: not-allowed;
+}

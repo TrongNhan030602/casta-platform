@@ -1,0 +1,155 @@
+.panorama-viewer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: visible;
+  background-color: #000;
+  user-select: none;
+  z-index: 9999;
+  transition: opacity 0.3s ease;
+}
+
+.panorama-viewer.hidden {
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.panorama-exit-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  user-select: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.panorama-exit-button:hover {
+  background: rgba(0, 0, 0, 0.85);
+  transform: scale(1.05);
+}
+
+/* Marker styles */
+/* Sản phẩm marker gắn trong 360 */
+.custom-marker {
+  position: relative;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  z-index: 999;
+  pointer-events: auto;
+}
+
+/* Ảnh đại diện sản phẩm */
+.marker-image {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  border: 2px solid #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hiệu ứng hover */
+.marker-image:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 12px rgba(0, 123, 255, 0.8);
+  z-index: 10;
+}
+
+/* Tooltip hiển thị tên sản phẩm */
+.marker-tooltip {
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  font-size: 13px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.custom-marker:hover .marker-tooltip {
+  opacity: 1;
+}
+
+/* Hiệu ứng pulsing (nếu muốn marker nổi bật liên tục) */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+  }
+}
+
+.custom-marker.pulsing .marker-image {
+  animation: pulse 2s infinite;
+}
+
+/* Nav hotspot */
+.nav-hotspot {
+  background: rgba(255, 255, 255, 0.6);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  padding: 6px;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: all 0.25s ease;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+}
+
+.nav-hotspot:hover {
+  transform: translate(-50%, -50%) scale(1.3);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.8), 0 0 20px rgba(0, 132, 255, 0.5);
+  z-index: 10;
+}
+
+.nav-hotspot-icon {
+  width: 40px;
+  height: 40px;
+  display: block;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  pointer-events: none; /* để tránh chặn sự kiện click trên cha */
+}
+/* Tooltip dạng nổi */
+.nav-tooltip {
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.nav-hotspot:hover .nav-tooltip {
+  opacity: 1;
+}

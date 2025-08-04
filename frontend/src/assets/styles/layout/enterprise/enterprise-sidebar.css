@@ -1,0 +1,134 @@
+/* --- Sidebar chính --- */
+.enterprise-sidebar {
+  width: 240px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: var(--color-accent);
+  color: var(--color-heading);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 20px 16px;
+  border-right: 1px solid #dee2e6;
+  transition: width 0.3s ease;
+  overflow-y: auto;
+  overflow: hidden;
+  z-index: 5;
+}
+
+/* --- Logo --- */
+.enterprise-sidebar__logo {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.enterprise-sidebar__logo-img {
+  max-width: 140px;
+  height: auto;
+  transition: all 0.3s ease;
+}
+
+/* --- Nav --- */
+.enterprise-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.enterprise-sidebar__link {
+  color: var(--color-heading);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  text-decoration: none;
+}
+
+.enterprise-sidebar__link:hover,
+.enterprise-sidebar__link:focus {
+  background-color: var(--color-primary);
+  color: #fff;
+  outline: none;
+  text-decoration: none;
+}
+
+.enterprise-sidebar__link.active {
+  background-color: var(--color-primary-dark);
+  color: #fff;
+  font-weight: 600;
+}
+
+.enterprise-sidebar__icon {
+  font-size: 1.1rem;
+}
+
+/* --- Toggle Button --- */
+.enterprise-sidebar__toggle {
+  position: absolute;
+  top: 20%;
+  right: -12px; /* ra sát mép phải */
+  transform: translateY(-50%);
+  z-index: 15;
+}
+
+.enterprise-sidebar__toggle-btn {
+  background-color: var(--color-accent);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-heading);
+  font-size: 1rem;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.enterprise-sidebar__toggle-btn:hover {
+  color: var(--color-primary);
+  transform: scale(1.1);
+}
+
+/* --- Collapsed state --- */
+.enterprise-sidebar.collapsed {
+  width: 60px;
+  padding: 10px 8px;
+}
+
+.enterprise-sidebar.collapsed .enterprise-sidebar__logo-img {
+  max-width: 40px;
+}
+
+.enterprise-sidebar.collapsed
+  .enterprise-sidebar__link
+  span:not(.enterprise-sidebar__icon) {
+  display: none;
+}
+
+.enterprise-sidebar__link span {
+  transition: all 0.3s ease;
+}
+
+/* --- Responsive fallback (optional) --- */
+@media (max-width: 768px) {
+  .enterprise-sidebar {
+    width: 60px;
+    padding: 10px 8px;
+  }
+
+  .enterprise-sidebar__logo-img {
+    max-width: 40px;
+  }
+
+  .enterprise-sidebar__link span:not(.enterprise-sidebar__icon) {
+    display: none;
+  }
+}

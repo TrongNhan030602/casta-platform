@@ -1,0 +1,81 @@
+.enterprise-account {
+  padding: 2rem;
+}
+
+.enterprise-account__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.enterprise-account__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+/* account-page.css */
+.account-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.account-card__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.account-card__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+/* Info */
+.account-card {
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.account-card__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.account-card__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.account-card__item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.account-card__item:last-child {
+  border-bottom: none;
+}
+
+.account-card__label {
+  font-weight: 500;
+  color: #333;
+}
+
+.account-card__value {
+  color: #555;
+}
+
+@media (max-width: 768px) {
+  .enterprise-account__grid {
+    grid-template-columns: 1fr;
+  }
+}

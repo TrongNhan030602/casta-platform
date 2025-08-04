@@ -1,0 +1,47 @@
+.handle-extend-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.handle-extend-modal__radio {
+  display: flex;
+  gap: 2rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.handle-extend-modal__radio label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.handle-extend-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.handle-extend-modal__readonly-date {
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  color: #495057;
+}
+
+.handle-extend-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.handle-extend-modal__hint {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-top: 4px;
+}
+
+.handle-extend-modal__btn {
+  min-width: 120px;
+}

@@ -1,0 +1,127 @@
+.admin-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 240px;
+  transition: width 0.3s ease;
+  background-color: var(--color-accent);
+  color: var(--color-heading);
+  border-right: 1px solid #dee2e6;
+  display: flex;
+  flex-direction: column;
+  z-index: 5;
+  overflow-y: auto; /* ✅ Cho phép cuộn dọc */
+  overflow-x: hidden;
+  padding: 12px;
+}
+
+.admin-sidebar.collapsed {
+  width: 90px;
+  z-index: 6;
+  padding-left: 10px;
+}
+
+/* Logo */
+.admin-sidebar__logo {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.admin-sidebar__logo-img {
+  max-width: 140px;
+  height: auto;
+}
+
+/* Menu */
+.admin-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-sidebar__link {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--color-heading);
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-sidebar__link:hover,
+.admin-sidebar__link:focus {
+  background-color: var(--color-primary);
+  color: #fff;
+  outline: none;
+  text-decoration: none;
+}
+
+.admin-sidebar__link.active {
+  background-color: var(--color-primary-dark);
+  color: #fff;
+  font-weight: 600;
+}
+
+.admin-sidebar__icon {
+  font-size: 1.1rem;
+  margin-right: 8px;
+}
+
+/* Collapse mode */
+.admin-sidebar.collapsed .admin-sidebar__icon {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.admin-sidebar.collapsed .admin-sidebar__link span {
+  display: none;
+}
+
+/* Toggle */
+.admin-sidebar__toggle {
+  position: absolute;
+  top: 50%;
+  right: -12px; /* ra sát mép phải */
+  transform: translateY(-50%);
+  z-index: 15;
+}
+
+.admin-sidebar__toggle-btn {
+  background-color: var(--color-accent);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-heading);
+  font-size: 1rem;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-sidebar__toggle-btn:hover {
+  color: var(--color-primary);
+  transform: scale(1.1);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .admin-sidebar {
+    width: 60px !important;
+    padding: 10px 8px;
+  }
+
+  .admin-sidebar__logo-img {
+    max-width: 40px;
+  }
+
+  .admin-sidebar__link span {
+    display: none;
+  }
+}

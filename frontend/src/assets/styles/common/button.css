@@ -1,0 +1,97 @@
+/* ===== Base ===== */
+.c-button {
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+/* ===== Variants ===== */
+.c-button--primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+.c-button--primary:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.c-button--outline {
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+.c-button--outline:hover {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary-dark);
+}
+
+.c-button--danger {
+  background-color: #dc3545;
+  color: white;
+}
+.c-button--danger:hover {
+  background-color: #c82333;
+}
+
+.c-button--danger-outline {
+  background-color: transparent;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}
+.c-button--danger-outline:hover {
+  background-color: #ffe6e9;
+}
+.c-button--secondary {
+  background-color: #e9f5f8;
+  color: #007289;
+  border: 1px solid #cde8ed;
+}
+.c-button--secondary:hover {
+  background-color: #d4eff5;
+  color: #005f70;
+  border-color: #b0dae1;
+}
+
+/* ===== Size ===== */
+.c-button--size-sm {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.c-button--size-md {
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+}
+
+.c-button--size-lg {
+  padding: 0.85rem 1.25rem;
+  font-size: 1.125rem;
+}
+
+/* ===== Radius ===== */
+.c-button--radius-full {
+  border-radius: 999px;
+}
+.c-button--radius-rounded {
+  border-radius: 6px;
+}
+.c-button--radius-square {
+  border-radius: 0;
+}
+
+/* ===== Full width ===== */
+.c-button--full {
+  width: 100%;
+  display: block;
+}
+
+/* ===== Disabled state ===== */
+.c-button:disabled,
+.c-button--disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  pointer-events: none;
+}

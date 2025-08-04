@@ -1,0 +1,92 @@
+/* ===== Global CSS (Rút gọn + chuẩn theo tone #007289) ===== */
+
+/* 0. Biến toàn cục */
+:root {
+  /* Màu chủ đạo */
+  --color-primary: #007289;
+  --color-primary-dark: #005f70;
+  --color-secondary: #00b4c6;
+  --color-heading: #003c50;
+  --color-text: #212529;
+  --color-bg: #f8f9fa;
+  --color-accent: #f0fbfc;
+
+  /* Trạng thái */
+  --color-success: #198754;
+  --color-warning: #facc15;
+  --color-info: #17a2b8;
+  --color-orange: #f97316;
+  --color-dark: #343a40;
+
+  /* Cảnh báo / Lỗi */
+  --color-danger: #dc3545;
+  --color-danger-light: #f8d7da;
+
+  /* Văn bản phụ */
+  --color-muted: #6c757d;
+
+  /* Border/Shadow */
+  --color-border: #dee2e6;
+  --shadow-soft: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 1. Reset cơ bản */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: "Roboto", sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* 2. Heading */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--color-heading);
+}
+
+/* 3. Link */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--color-secondary);
+  text-decoration: underline;
+}
+
+/* 4. Form control cơ bản */
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* 5. Tiêu đề trang */
+.page-title {
+  font-size: clamp(1.5rem, 2vw, 2.125rem);
+  color: var(--color-heading);
+  font-weight: 700;
+  text-transform: capitalize;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: 6px;
+  display: inline-block;
+}

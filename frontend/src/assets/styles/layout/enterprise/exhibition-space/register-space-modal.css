@@ -1,0 +1,40 @@
+.register-modal {
+  padding: 1rem 0;
+}
+
+.register-modal__info {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-left: 4px solid var(--color-primary, #007289);
+  margin-bottom: 1.5rem;
+  border-radius: 6px;
+}
+
+.register-modal__space {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.register-modal__price {
+  color: var(--color-primary, #007289);
+  font-weight: 600;
+}
+
+.register-modal__estimate {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.register-modal__cost {
+  color: var(--color-primary, #007289);
+  font-weight: 600;
+}
+
+.register-modal__actions {
+  border-top: 1px solid #e0e0e0;
+  padding-top: 1rem;
+  margin-top: 2rem;
+}

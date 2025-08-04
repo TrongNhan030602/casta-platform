@@ -1,0 +1,70 @@
+.react-select__control {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  height: 46px;
+  padding: 0 0.75rem;
+  background-color: white;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: unset;
+  display: flex;
+  align-items: center;
+}
+
+.react-select__control--is-focused {
+  border-color: var(--color-primary) !important;
+}
+
+.react-select__control--is-disabled {
+  background-color: #f8f9fa;
+}
+
+.react-select__value-container {
+  padding: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+}
+.react-select__input {
+  margin: 0;
+  padding: 0;
+  color: var(--color-text);
+}
+
+.react-select__menu {
+  z-index: 1000;
+}
+
+.react-select__option {
+  font-size: 0.95rem;
+  padding: 8px 12px;
+}
+.c-select__label {
+  font-weight: 500;
+  margin: 0.6rem 0 0.2rem 0;
+  color: var(--color-heading);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.react-select__option--is-focused {
+  background-color: var(--color-accent);
+}
+
+.react-select__option--is-selected {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+/* Hiển thị lỗi */
+.has-error .react-select__control {
+  border-color: var(--color-danger);
+}
+.c-select__error {
+  color: var(--color-danger);
+}
+.has-error .react-select__control--is-focused {
+  box-shadow: 0 0 0 1px var(--color-danger);
+}

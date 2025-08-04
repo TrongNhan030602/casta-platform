@@ -1,0 +1,23 @@
+.filter-bar-violation {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-bar-violation__input,
+.filter-bar-violation__select {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-width: 160px;
+  background-color: white;
+  transition: border-color 0.2s;
+}
+
+.filter-bar-violation__input:focus,
+.filter-bar-violation__select:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}

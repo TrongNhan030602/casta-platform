@@ -1,0 +1,35 @@
+.c-date-picker {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.c-date-picker__label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--color-heading);
+}
+
+.c-date-picker__input {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: white;
+  transition: border-color 0.2s;
+}
+
+.c-date-picker__input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+.c-date-picker__input.invalid {
+  border-color: red;
+}
+
+.c-date-picker__error {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}

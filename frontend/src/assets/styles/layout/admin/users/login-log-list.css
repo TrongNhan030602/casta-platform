@@ -1,0 +1,33 @@
+.login-log-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.login-log-item {
+  margin-bottom: 16px;
+  border-bottom: 1px dashed var(--color-border);
+  padding-bottom: 8px;
+}
+
+.log-datetime {
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+.log-device {
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+/* 6. Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,47 @@
+.account-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Căn giữa cả chiều dọc */
+  min-height: calc(100vh - 64px);
+}
+
+.account-page__title {
+  margin-bottom: 24px;
+  color: var(--color-primary-dark);
+}
+
+.account-page__card {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-width: 480px;
+}
+
+.account-page__row {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+.account-page__row span {
+  color: var(--color-heading);
+  min-width: 130px;
+}
+.account-page__row strong {
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.account-page__status--active {
+  color: green;
+}
+
+.account-page__status--inactive,
+.account-page__status--pending,
+.account-page__status--rejected {
+  color: var(--color-danger);
+}

@@ -1,0 +1,21 @@
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.filter-bar__input {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-width: 300px;
+  background-color: white;
+  transition: border-color 0.2s;
+}
+
+.filter-bar__input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}

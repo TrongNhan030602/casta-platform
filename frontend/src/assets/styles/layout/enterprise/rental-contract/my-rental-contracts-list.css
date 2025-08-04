@@ -1,0 +1,66 @@
+/* my-rental-contracts-list.css */
+.my-rental-contracts {
+  --main-color: #007289;
+}
+
+.my-rental-contracts .contract-card {
+  border: 1px solid #e0e0e0;
+  transition: box-shadow 0.3s ease;
+  border-radius: 12px;
+}
+
+.my-rental-contracts .contract-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.contract-code {
+  font-weight: 600;
+  color: var(--main-color);
+}
+
+.status-badge {
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-transform: capitalize;
+}
+
+.status--pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status--approved {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status--rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status--cancelled {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+.my-rental-contracts .contract-card {
+  border-radius: 12px;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.2s ease;
+}
+
+.my-rental-contracts .contract-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 114, 137, 0.1);
+}
+
+.contract-code {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}

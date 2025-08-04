@@ -1,0 +1,41 @@
+# Laravel & Composer
+/vendor
+/node_modules
+/.phpunit.cache
+.phpunit.result.cache
+.phpactor.json
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Storage
+/storage/*.key
+/storage/framework/*
+!/storage/framework/.gitignore
+/storage/logs/*
+!/storage/logs/.gitignore
+/public/storage
+
+# Frontend builds (Vite, Mix)
+/public/hot
+/public/build
+
+# IDE & Tools
+/.idea
+/.vscode
+/.fleet
+/.zed
+/.nova
+
+# Homestead
+Homestead.json
+Homestead.yaml
+
+# Log & Debug
+npm-debug.log
+yarn-error.log
+
+# Auth
+/auth.json

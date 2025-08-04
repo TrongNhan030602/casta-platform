@@ -1,0 +1,112 @@
+.product-detail__section {
+  background-color: #fff;
+  border: 1px solid #dde4ea;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s ease;
+  margin-top: 12px;
+}
+
+.product-detail__section-title {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--color-heading, #007289);
+  border-left: 4px solid var(--color-primary, #007289);
+  padding-left: 12px;
+  margin-bottom: 16px;
+}
+
+.product-detail__section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Info */
+
+.product-info__title {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--color-heading, #007289);
+  border-left: 4px solid var(--color-primary, #007289);
+  padding-left: 12px;
+  margin-bottom: 16px;
+}
+
+.product-info__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-info__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  line-height: 1.5;
+}
+
+.product-info__label {
+  font-weight: 600;
+  color: #333;
+  min-width: 120px;
+}
+
+.product-info__value {
+  color: #555;
+  flex: 1;
+}
+
+.product-info__tag {
+  display: inline-block;
+  background-color: #6c757d;
+  color: #fff;
+  padding: 4px 10px;
+  margin: 2px 6px 2px 0;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.product-info__link {
+  color: #007289;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.product-info__link:hover {
+  color: #004b5f;
+}
+
+/* Image */
+.product-detail__image-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.product-detail__image-item {
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f8f9fa;
+  padding: 6px;
+  transition: transform 0.2s;
+}
+
+.product-detail__image-item:hover {
+  transform: scale(1.03);
+}
+
+.product-detail__image {
+  max-width: 140px;
+  max-height: 140px;
+  border-radius: 6px;
+  object-fit: cover;
+  display: block;
+}
+
+.product-detail__image--main {
+  border: 2px solid var(--color-primary, #007289);
+}

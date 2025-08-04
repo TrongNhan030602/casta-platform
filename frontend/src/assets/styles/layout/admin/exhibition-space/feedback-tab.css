@@ -1,0 +1,34 @@
+.feedback-filter-wrapper {
+  width: 100%;
+}
+
+.feedback-filter-wrapper .filter-bar {
+  max-width: 100%;
+}
+
+.feedback-tab {
+  margin-top: 1rem;
+}
+
+.feedback-tab__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.feedback-card__header {
+  font-size: 0.95rem;
+}
+
+.feedback-card__user {
+  font-weight: 500;
+}
+
+.feedback-card__rating svg {
+  margin-right: 2px;
+}
+
+.feedback-card__footer {
+  margin-top: 1rem;
+}

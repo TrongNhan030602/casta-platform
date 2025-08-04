@@ -1,0 +1,27 @@
+.enterprise-list-page {
+  padding: 32px 24px;
+  background: var(--color-bg);
+}
+
+.enterprise-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.total-count {
+  margin: 8px 0 12px;
+  font-size: 14px;
+  color: #666;
+}
+/* Đánh dấu nổi bật dòng có trạng thái "pending" */
+.pending-row {
+  background-color: #fff9db; /* vàng nhạt */
+  border-left: 4px solid #f59e0b; /* màu vàng cam */
+  transition: background-color 0.3s ease;
+}
+
+.pending-row:hover {
+  background-color: #fff3c4;
+}

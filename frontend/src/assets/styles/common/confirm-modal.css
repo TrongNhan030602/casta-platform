@@ -1,0 +1,21 @@
+.confirm-modal {
+  display: flex;
+  flex-direction: column;
+  min-height: 160px;
+  justify-content: space-between;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.confirm-modal__message {
+  padding-top: 8px;
+  margin: 0;
+}
+
+.confirm-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
