@@ -13,6 +13,7 @@ import {
   FaCommentDots,
   FaTags,
   FaBoxes,
+  FaCheckSquare,
 } from "react-icons/fa";
 import "@/assets/styles/layout/admin/admin-sidebar.css";
 
@@ -49,6 +50,12 @@ const menuItems = [
     label: "Hợp đồng thuê",
     icon: <FaFileContract />,
   },
+  {
+    to: "/admin/exhibition-approvals",
+    label: "Duyệt sản phẩm trưng bày",
+    icon: <FaCheckSquare />,
+  },
+
   {
     to: "/admin/product-categories",
     label: "Danh mục sản phẩm",

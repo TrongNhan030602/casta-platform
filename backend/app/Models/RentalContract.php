@@ -26,6 +26,9 @@ class RentalContract extends Model
         'unit_price',
         'cancel_reason',
         'extend_requested_at',
+        'is_public',
+        'public_slug',
+        'created_by', // khi admin tạo offline
     ];
 
     protected $casts = [
@@ -42,7 +45,10 @@ class RentalContract extends Model
             $contract->code = 'HĐ-' . str_pad($latestId, 5, '0', STR_PAD_LEFT);
         });
     }
-
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 
     public function enterprise()
     {

@@ -12,14 +12,15 @@ use App\Http\Controllers\Api\ViolationController;
 use App\Http\Controllers\Api\EnterpriseController;
 use App\Http\Controllers\Api\ProductImageController;
 use App\Http\Controllers\Api\ForgotPasswordController;
-use App\Http\Controllers\Api\PublicCategoryController;
 use App\Http\Controllers\Api\RentalContractController;
 use App\Http\Controllers\Api\ExhibitionMediaController;
 use App\Http\Controllers\Api\ExhibitionSpaceController;
 use App\Http\Controllers\Api\ProductStockLogController;
 use App\Http\Controllers\Api\ProductStockSummaryController;
+use App\Http\Controllers\Api\Public\PublicCategoryController;
 use App\Http\Controllers\Api\ExhibitionSpaceProductController;
 use App\Http\Controllers\Api\ExhibitionSpaceCategoryController;
+use App\Http\Controllers\Api\Public\PublicExhibitionController;
 
 
 /** Truy cập ảnh từ Hostinger */
@@ -38,8 +39,15 @@ Route::get('/storage/{path}', function ($path) {
 
 //======================================= PUBLIC =========================================
 Route::prefix('public')->group(function () {
+    // Tree danh mục sản phẩm
     Route::get('/categories/tree', [PublicCategoryController::class, 'tree']);
+
+    // Không gian trưng bày công khai theo slug
+    Route::prefix('exhibitions')->group(function () {
+        Route::get('{slug}', [PublicExhibitionController::class, 'show']);
+    });
 });
+
 
 
 // ============================== Xác thực ========================================================
@@ -324,6 +332,9 @@ Route::prefix('exhibition-spaces/{space}/media')
 Route::prefix('rental-contracts')
     ->middleware(['auth:api'])
     ->group(function () {
+        // ✅ [ADMIN, CVCC] – Tạo hợp đồng thuê offline
+        // → Policy: RentalContractPolicy@createOffline
+        Route::post('/offline', [RentalContractController::class, 'storeOffline']);
 
         // Dách sách không gian 
         Route::get('/', [RentalContractController::class, 'index']);
@@ -375,6 +386,10 @@ Route::prefix('rental-contracts')
 Route::prefix('exhibition-space-products')
     ->middleware(['auth:api'])
     ->group(function () {
+        // [ADMIN, CVCC] – Lọc danh sách sản phẩm trưng bày để duyệt
+// → Policy: ExhibitionSpaceProductPolicy@viewAny
+        Route::get('/', [ExhibitionSpaceProductController::class, 'index']);
+
         // Lấy danh sách sản phẩm theo hợp đồng
         Route::get('by-contract/{contract}', [ExhibitionSpaceProductController::class, 'getByContract']);
 

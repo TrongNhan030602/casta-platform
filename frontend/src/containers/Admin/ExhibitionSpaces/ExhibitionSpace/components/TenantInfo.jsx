@@ -10,6 +10,7 @@ import {
   FaFileInvoice,
 } from "react-icons/fa";
 import { formatDateOnly } from "@/utils/formatDateOnly";
+import { formatCurrency } from "@/utils/formatCurrency";
 import "@/assets/styles/layout/admin/exhibition-space/tenant-info.css";
 
 const TenantInfo = ({ tenants = [] }) => {
@@ -106,8 +107,7 @@ const TenantInfo = ({ tenants = [] }) => {
                     {formatDateOnly(end_date)}
                   </p>
                   <p>
-                    <FaMoneyBill />{" "}
-                    {parseInt(total_cost).toLocaleString("vi-VN")} đ
+                    <FaMoneyBill /> {formatCurrency(total_cost)}
                   </p>
                 </div>
               </div>

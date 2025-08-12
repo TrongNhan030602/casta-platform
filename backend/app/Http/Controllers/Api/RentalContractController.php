@@ -15,6 +15,7 @@ use App\Http\Requests\RentalContract\RejectRentalContractRequest;
 use App\Http\Requests\RentalContract\ApproveRentalContractRequest;
 use App\Http\Requests\RentalContract\FilterRentalContractsRequest;
 use App\Http\Resources\RentalContract\RentalContractDetailResource;
+use App\Http\Requests\RentalContract\StoreOfflineRentalContractRequest;
 
 class RentalContractController extends BaseApiController
 {
@@ -37,6 +38,22 @@ class RentalContractController extends BaseApiController
                 'data' => RentalContractResource::collection($contracts),
                 'meta' => $this->meta($contracts),
             ]);
+        });
+    }
+    public function storeOffline(StoreOfflineRentalContractRequest $request): JsonResponse
+    {
+        return $this->safe(function () use ($request) {
+            $this->authorize('createOffline', RentalContract::class);
+
+            $data = $request->validated();
+            $contract = $this->service->createOffline($data);
+
+            return response()->json([
+                'message' => 'Hợp đồng thuê không gian đã được tạo thành công.',
+                'data' => new RentalContractResource(
+                    $contract->refresh()->load(['enterprise', 'space', 'reviewer', 'creator'])
+                ),
+            ], 201);
         });
     }
 
@@ -171,13 +188,6 @@ class RentalContractController extends BaseApiController
         return $this->safe(function () use ($id) {
             $user = auth()->user()->loadMissing('enterprise');
 
-            \Log::info('→ Check enterprise before extend', [
-                'user_id' => $user->id,
-                'role' => $user->role->value,
-                'enterprise_id' => $user->enterprise_id,
-                'enterprise_relation_loaded' => $user->relationLoaded('enterprise'),
-                'real_enterprise_id' => $user->real_enterprise_id,
-            ]);
 
             $contract = $this->service->findOrFail($id);
             $this->authorize('extend', $contract);

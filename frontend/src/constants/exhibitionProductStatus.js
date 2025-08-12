@@ -20,12 +20,6 @@ export const EXHIBITION_PRODUCT_STATUSES = {
     color: "danger",
     icon: FaTimesCircle,
   },
-  removed: {
-    value: "removed",
-    label: "Đã gỡ",
-    color: "secondary",
-    icon: FaBan,
-  },
 };
 
 export const EXHIBITION_PRODUCT_STATUS_OPTIONS = Object.values(

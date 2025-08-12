@@ -32,6 +32,13 @@ const ContractGeneralInfo = ({ contract }) => {
           <strong>Lý do hủy:</strong> {contract.cancel_reason}
         </p>
       )}
+      {contract.creator?.name && (
+        <p>
+          <strong>Người tạo hợp đồng (thủ công):</strong>{" "}
+          {contract.creator.name}
+        </p>
+      )}
+
       <p>
         <strong>Người duyệt hợp đồng:</strong>{" "}
         {contract.contract_reviewer || "--"}

@@ -3,6 +3,7 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use App\Enums\UserRole;
+use Illuminate\Support\Str;
 use App\Models\RentalContract;
 use App\Models\ExhibitionSpace;
 use App\Enums\RentalContractStatus;
@@ -42,7 +43,6 @@ class RentalContractService
 
         $data['enterprise_id'] = $user->real_enterprise_id;
 
-        // Không cho gửi lại yêu cầu nếu đang chờ duyệt
         $exists = RentalContract::where('enterprise_id', $data['enterprise_id'])
             ->where('exhibition_space_id', $data['exhibition_space_id'])
             ->where('status', RentalContractStatus::PENDING)
@@ -52,25 +52,59 @@ class RentalContractService
             abort(400, 'Bạn đã gửi yêu cầu thuê không gian này và đang chờ duyệt.');
         }
 
-        // Tính giá thuê và số ngày
-        $space = ExhibitionSpace::findOrFail($data['exhibition_space_id']);
-        $unitPrice = $space->price; // Giá thuê mỗi ngày
+        $pricing = $this->calculateRentalPrice($data);
+        $data['unit_price'] = $pricing['unit_price'];
+        $data['total_cost'] = $pricing['total_cost'];
 
+        return $this->repo->create($data);
+    }
+
+    public function createOffline(array $data): RentalContract
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            abort(401, 'Bạn cần đăng nhập để thực hiện thao tác này.');
+        }
+
+        if (!in_array($user->role, [UserRole::ADMIN, UserRole::CVCC])) {
+            abort(403, 'Bạn không có quyền tạo hợp đồng offline.');
+        }
+
+        $pricing = $this->calculateRentalPrice($data);
+        $data['unit_price'] = $pricing['unit_price'];
+        $data['total_cost'] = $pricing['total_cost'];
+        $data['status'] = RentalContractStatus::PENDING;
+        $data['created_by'] = $user->id;
+
+        return $this->repo->createByAdmin($data);
+    }
+
+    protected function calculateRentalPrice(array $data): array
+    {
         $startDate = Carbon::parse($data['start_date']);
         $endDate = Carbon::parse($data['end_date']);
 
-        // Kiểm tra logic ngày
         if ($endDate->lt($startDate)) {
             abort(422, 'Ngày kết thúc phải sau hoặc bằng ngày bắt đầu.');
         }
 
-        $days = $startDate->diffInDays($endDate) + 1; // bao gồm cả ngày kết thúc
+        $space = ExhibitionSpace::findOrFail($data['exhibition_space_id']);
 
-        $data['unit_price'] = $unitPrice;
-        $data['total_cost'] = $unitPrice * $days;
+        $days = $startDate->diffInDays($endDate) + 1;
+        $unitPrice = isset($data['unit_price']) && is_numeric($data['unit_price']) && $data['unit_price'] >= 0
+            ? $data['unit_price']
+            : $space->price;
 
-        return $this->repo->create($data);
+        $additionalCost = $data['additional_cost'] ?? 0;
+
+        return [
+            'unit_price' => $unitPrice,
+            'total_cost' => $unitPrice * $days + $additionalCost,
+            'days' => $days,
+        ];
     }
+
 
 
 
@@ -101,6 +135,8 @@ class RentalContractService
             'status' => RentalContractStatus::APPROVED,
             'approved_at' => now(),
             'reviewed_by' => $reviewerId,
+            'is_public' => true,
+            'public_slug' => $contract->public_slug ?? Str::slug("exhibition-{$contract->id}-" . Str::random(6)),
         ]);
 
         $contract = $contract->refresh()->load([

@@ -3,15 +3,16 @@
 namespace App\Models;
 
 use App\Enums\UserRole;
-use App\Enums\UserStatus;
 use App\Models\Customer;
+use App\Enums\UserStatus;
 use App\Models\Enterprise;
+use App\Enums\EnterpriseStatus;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -148,5 +149,31 @@ class User extends Authenticatable implements JWTSubject
     {
         return in_array($this->role->value, UserRole::customerRoles());
     }
+
+    public function canManageEnterpriseId(int $enterpriseId): bool
+    {
+        if ($this->isSystemUser()) {
+            return true;
+        }
+
+        return $this->getRealEnterpriseIdAttribute() === $enterpriseId;
+    }
+
+
+
+    // Helper Kiểm tra hồ sơ doanh nghiệp đã được duyệt hay chưa
+    public function hasApprovedProfile(): bool
+    {
+        if (!$this->isEnterprise()) {
+            return true;
+        }
+
+        $enterprise = $this->isMainEnterprise()
+            ? $this->enterprise
+            : $this->enterpriseBelongingTo;
+
+        return $enterprise?->status === EnterpriseStatus::APPROVED;
+    }
+
 
 }

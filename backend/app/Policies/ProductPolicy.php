@@ -4,55 +4,43 @@ namespace App\Policies;
 use App\Models\User;
 use App\Models\Product;
 
-class ProductPolicy
+class ProductPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
         return $user->isEnterprise() || $user->isSystemUser();
     }
 
-
     public function view(User $user, Product $product): bool
     {
-        return (
-            $user->isEnterprise() && $product->enterprise_id === $user->real_enterprise_id
-        ) || $user->isSystemUser();
+        return $this->enterpriseOwnsResource($user, $product) || $user->isSystemUser();
     }
-
 
     public function create(User $user): bool
     {
-        return $user->isEnterprise();
+        // Nếu cần profile đã duyệt thì dùng enterpriseApprovedAndOwns,
+        // còn create chưa có resource thì chỉ cần check là doanh nghiệp
+        return $user->isEnterprise() && $user->hasApprovedProfile();
     }
+
     public function submit(User $user, Product $product): bool
     {
-        return $user->isEnterprise()
-            && $product->enterprise_id === $user->real_enterprise_id;
+        return $this->enterpriseApprovedAndOwns($user, $product);
     }
 
     public function update(User $user, Product $product): bool
     {
-        return $user->isEnterprise()
-            && $product->enterprise_id === $user->real_enterprise_id;
+        return $this->enterpriseApprovedAndOwns($user, $product);
     }
 
     public function delete(User $user, Product $product): bool
     {
-        return $user->isEnterprise() && $product->enterprise_id === $user->real_enterprise_id;
+        return $this->enterpriseApprovedAndOwns($user, $product);
     }
+
     public function updateImage(User $user, Product $product): bool
     {
-        // Cho phép doanh nghiệp chính hoặc nhân viên DN chỉnh sửa ảnh
-        if ($user->isEnterprise() && $product->enterprise_id === $user->real_enterprise_id) {
-            return true;
-        }
-
-        // Cho phép admin (QTHT) chỉnh sửa ảnh sản phẩm
-        if ($user->isSystemUser()) {
-            return true;
-        }
-
-        return false;
+        return $this->enterpriseOwnsResource($user, $product) || $user->isSystemUser();
     }
 
     public function adminDelete(User $user, Product $product): bool
@@ -60,31 +48,28 @@ class ProductPolicy
         return $user->isSystemUser();
     }
 
-
     public function approve(User $user, Product $product): bool
     {
-        return $user->isSystemUser(); // Chỉ QTHT có quyền duyệt
+        return $user->isSystemUser();
     }
 
     public function adminStore(User $user): bool
     {
         return $user->isSystemUser();
     }
+
     public function adminUpdate(User $user, Product $product): bool
     {
         return $user->isSystemUser();
     }
+
     public function adjustStock(User $user, Product $product): bool
     {
-        return (
-            $user->isEnterprise() && $product->enterprise_id === $user->real_enterprise_id
-        ) || $user->isSystemUser();
+        return $this->enterpriseOwnsResource($user, $product) || $user->isSystemUser();
     }
+
     public function viewStockLogs(User $user, Product $product): bool
     {
-        return $this->view($user, $product); // Dùng lại logic có sẵn
+        return $this->view($user, $product);
     }
-
-
-
 }

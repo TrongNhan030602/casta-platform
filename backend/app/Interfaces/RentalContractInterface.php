@@ -9,6 +9,7 @@ interface RentalContractInterface
     public function getRentalContracts(array $filters): LengthAwarePaginator;
     public function findOrFail(int $id): RentalContract;
 
+    public function createByAdmin(array $data): RentalContract;
     public function create(array $data): RentalContract;
     public function approve(RentalContract $contract, int $reviewerId): RentalContract;
     public function reject(RentalContract $contract, int $reviewerId, string $reason): RentalContract;

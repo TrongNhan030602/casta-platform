@@ -17,8 +17,15 @@ class RentalContractRepository implements RentalContractInterface
             'space.category',
             'space.media',
             'reviewer',
+            'creator'
         ])->findOrFail($id);
 
+    }
+    public function createByAdmin(array $data): RentalContract
+    {
+        return RentalContract::create($data)
+            ->refresh()
+            ->load(['enterprise', 'space', 'creator', 'reviewer']);
     }
 
     public function getRentalContracts(array $filters): LengthAwarePaginator
@@ -70,7 +77,8 @@ class RentalContractRepository implements RentalContractInterface
         return $query
             ->with([
                 'enterprise:id,company_name,email,phone',
-                'space:id,code,name,location'
+                'space:id,code,name,location',
+                'creator',
             ])
             ->paginate($filters['per_page'] ?? 20);
     }

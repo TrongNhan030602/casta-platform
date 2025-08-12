@@ -32,7 +32,8 @@ class EnterpriseRepository implements EnterpriseRepositoryInterface
             $query->orderBy($filters['sort_by'], $filters['sort_order']);
         }
 
-        return $query->with('user')->paginate($filters['per_page'] ?? 15);
+        return $query->with(['user', 'publicContract'])->paginate($filters['per_page'] ?? 15);
+
     }
 
     public function findById(int $id): ?Enterprise

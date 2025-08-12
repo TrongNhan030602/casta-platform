@@ -14,7 +14,7 @@ class ExhibitionSpaceProductResource extends JsonResource
             'id' => $this->id,
             'product' => new ProductResource($this->whenLoaded('product')),
             'rental_contract_id' => $this->rental_contract_id,
-            'space_id' => optional($this->rentalContract)->space_id,
+            'exhibition_space_id' => optional($this->rentalContract)->exhibition_space_id,
             'status' => $this->status,
             'note' => $this->note,
             'position_metadata' => $this->position_metadata,

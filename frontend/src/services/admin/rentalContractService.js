@@ -3,6 +3,11 @@ import axiosClient from "@/services/shared/axiosClient";
 // ===============================
 // 🛠️ ADMIN - HỢP ĐỒNG THUÊ
 // ===============================
+
+// 📌 Tạo hợp đồng thuê offline (chỉ dành cho ADMIN, CVCC)
+export const createOfflineRentalContract = (data) =>
+  axiosClient.post("/rental-contracts/offline", data);
+
 // 📌 Lấy danh sách không gian còn trống để thuê (có thể lọc theo nhiều tiêu chí)
 export const getContracts = (params = {}) =>
   axiosClient.get("/rental-contracts", { params });

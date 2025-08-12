@@ -48,4 +48,10 @@ class Enterprise extends Model
         return $this->belongsTo(User::class, 'reviewed_by');
     }
 
+    // Lấy hợp đồng công khai của doanh nghiệp (chỉ có một hợp đồng công khai mới nhất)
+    public function publicContract()
+    {
+        return $this->hasOne(RentalContract::class)->where('is_public', true);
+    }
+
 }

@@ -29,6 +29,8 @@ class EnterpriseResource extends JsonResource
             // Optional
             'user' => $this->whenLoaded('user'),
             'reviewer' => $this->whenLoaded('reviewer'),
+            'public_slug' => optional($this->whenLoaded('publicContract'))->public_slug,
+
         ];
     }
 }

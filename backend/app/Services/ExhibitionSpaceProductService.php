@@ -18,6 +18,10 @@ class ExhibitionSpaceProductService
     {
         $this->repo = $repo;
     }
+    public function getAll(array $filters, int $perPage = 15): LengthAwarePaginator
+    {
+        return $this->repo->getAll($filters, $perPage);
+    }
 
     public function getMyProducts(): LengthAwarePaginator
     {
@@ -29,11 +33,12 @@ class ExhibitionSpaceProductService
 
         return $this->repo->getMyProducts($user->real_enterprise_id);
     }
+
     public function getByContract(RentalContract $contract): Collection
     {
         $user = auth()->user();
 
-        if (!$user || !$user->real_enterprise_id || $contract->enterprise_id !== $user->real_enterprise_id) {
+        if (!$user || !$user->canManageEnterpriseId($contract->enterprise_id)) {
             abort(403, 'Không có quyền truy cập hợp đồng này.');
         }
 
@@ -44,12 +49,12 @@ class ExhibitionSpaceProductService
     {
         $user = auth()->user();
 
-        // Tìm hợp đồng và kiểm tra quyền sở hữu
-        $contract = RentalContract::where('id', $data['rental_contract_id'])
-            ->where('enterprise_id', $user->real_enterprise_id)
-            ->firstOrFail();
+        $contract = RentalContract::where('id', $data['rental_contract_id'])->firstOrFail();
 
-        // ⚠️ Check logic nghiệp vụ tại đây
+        if (!$user->canManageEnterpriseId($contract->enterprise_id)) {
+            abort(403, 'Bạn không có quyền sử dụng hợp đồng này.');
+        }
+
         if ($contract->status !== RentalContractStatus::APPROVED) {
             abort(403, 'Không thể thêm sản phẩm vào hợp đồng chưa được duyệt.');
         }
@@ -59,13 +64,11 @@ class ExhibitionSpaceProductService
         return $this->repo->create($data);
     }
 
-
     public function update(ExhibitionSpaceProduct $product, array $data): ExhibitionSpaceProduct
     {
         $user = auth()->user();
 
-        // Kiểm tra quyền sở hữu
-        if ($product->rentalContract->enterprise_id !== $user->real_enterprise_id) {
+        if (!$user->canManageEnterpriseId($product->rentalContract->enterprise_id)) {
             abort(403, 'Bạn không có quyền cập nhật sản phẩm này.');
         }
 
@@ -78,7 +81,6 @@ class ExhibitionSpaceProductService
             abort(400, 'Chỉ được cập nhật sản phẩm khi đang chờ duyệt hoặc đã bị từ chối.');
         }
 
-        // Reset trạng thái về pending nếu trước đó là rejected
         if ($product->status === ExhibitionProductStatus::REJECTED) {
             $data['status'] = ExhibitionProductStatus::PENDING;
         }
@@ -90,7 +92,7 @@ class ExhibitionSpaceProductService
     {
         $user = auth()->user();
 
-        if ($product->rentalContract->enterprise_id !== $user->real_enterprise_id) {
+        if (!$user->canManageEnterpriseId($product->rentalContract->enterprise_id)) {
             abort(403, 'Bạn không có quyền xoá sản phẩm này.');
         }
 
@@ -110,9 +112,7 @@ class ExhibitionSpaceProductService
     {
         $product->refresh();
 
-        $statusEnumFromDb = $product->status;
-
-        if ($statusEnumFromDb !== ExhibitionProductStatus::PENDING) {
+        if ($product->status !== ExhibitionProductStatus::PENDING) {
             abort(400, 'Chỉ được xét duyệt sản phẩm khi đang chờ duyệt.');
         }
 
@@ -127,8 +127,4 @@ class ExhibitionSpaceProductService
 
         return $this->repo->approve($product, $statusEnum, $note);
     }
-
-
-
-
 }

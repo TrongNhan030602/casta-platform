@@ -10,6 +10,8 @@ import ConfirmModal from "@/components/common/ConfirmModal";
 import CommonFilterBar from "@/components/common/FilterBar";
 import Badge from "@/components/common/Badge";
 import RejectContractModal from "./components/RejectContractModal";
+import CreateOfflineContractModal from "./components/CreateOfflineContractModal";
+
 import HandleExtendModal from "./components/HandleExtendModal";
 
 import { RENTAL_CONTRACT_STATUSES } from "@/constants/rentalContractStatus";
@@ -30,6 +32,7 @@ const RentalContractList = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const [filters, setFilters] = useState({
     keyword: "",
@@ -318,6 +321,12 @@ const RentalContractList = () => {
         <h2 className="page-title">Danh sách hợp đồng thuê</h2>
         <div className="d-flex gap-2">
           <Button
+            variant="primary"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            + Tạo
+          </Button>
+          <Button
             variant={filters.status === "pending" ? "danger" : "danger-outline"}
             onClick={() =>
               handleFilterChange({
@@ -327,7 +336,7 @@ const RentalContractList = () => {
             }
             className="d-flex align-items-center gap-2"
           >
-            Hợp đồng chờ duyệt
+            Chờ duyệt
             <span>({pendingCount})</span>
           </Button>
           <Button
@@ -439,8 +448,16 @@ const RentalContractList = () => {
           setExtendModalOpen(false);
           setSelectedContract(null);
         }}
-        onSubmit={handleExtendSubmit} // 👈 Sử dụng đúng hàm xử lý
+        onSubmit={handleExtendSubmit}
         loading={isHandlingExtend}
+      />
+      <CreateOfflineContractModal
+        open={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onCreated={() => {
+          fetchContracts();
+          setIsCreateModalOpen(false);
+        }}
       />
     </div>
   );

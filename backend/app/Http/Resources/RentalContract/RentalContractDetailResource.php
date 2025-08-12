@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Resources\RentalContract;
 
+use App\Http\Resources\User\UserCompactResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class RentalContractDetailResource extends JsonResource
@@ -45,6 +46,7 @@ class RentalContractDetailResource extends JsonResource
                 'representative' => $this->resource->enterprise->representative,
                 'reviewed_by' => $this->resource->enterprise->reviewer?->name,
             ] : null,
+            'creator' => new UserCompactResource($this->whenLoaded('creator')),
 
             'contract_reviewer' => $this->resource->reviewer?->name,
             'has_extend_request' => !is_null($this->resource->extend_requested_at),

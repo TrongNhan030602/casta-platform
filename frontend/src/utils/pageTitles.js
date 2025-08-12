@@ -12,6 +12,7 @@ export const pageTitles = {
   "/admin/exhibition-spaces": "Không gian trưng bày",
   "/admin/rental-contracts": " Hợp đồng thuê không gian",
   "/admin/product-categories": "Danh mục sản phẩm",
+  "/admin/exhibition-approvals": "Duyệt sản phẩm trong không gian",
   "/admin/products": "Quản lý sản phẩm",
   "/admin/orders": "Quản lý đơn hàng",
   "/admin/reports": "Báo cáo thống kê",

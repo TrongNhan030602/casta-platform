@@ -18,7 +18,6 @@ import AdminActions from "./components/AdminActions";
 import MediaDisplay from "./components/MediaDisplay";
 import MediaUploadForm from "./components/MediaUploadForm";
 import TenantInfo from "./components/TenantInfo";
-import ProductApprovalTab from "./components/ProductApprovalTab";
 import FeedbackTab from "./components/FeedbackTab";
 import Space360Viewer from "./components/Space360Viewer";
 
@@ -186,7 +185,6 @@ const ExhibitionSpaceDetailPage = () => {
         {[
           { key: "overview", label: "Thông tin" },
           { key: "tenant", label: "Doanh nghiệp đang / sắp thuê" },
-          { key: "products", label: "Sản phẩm chờ duyệt" },
           { key: "feedback", label: "Góp ý / Phản hồi" },
         ].map(({ key, label }) => (
           <button
@@ -265,8 +263,6 @@ const ExhibitionSpaceDetailPage = () => {
             loading={tenantLoading}
           />
         )}
-
-        {activeTab === "products" && <ProductApprovalTab spaceId={id} />}
 
         {activeTab === "feedback" && (
           <FeedbackTab

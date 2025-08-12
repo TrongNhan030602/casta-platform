@@ -62,22 +62,21 @@ export const productAdminUpdateSchema = yup.object().shape({
   discount_start_at: yup
     .date()
     .nullable()
+    .transform((value, originalValue) => (originalValue === "" ? null : value))
     .typeError("Ngày bắt đầu không hợp lệ"),
 
   discount_end_at: yup
     .date()
     .nullable()
+    .transform((value, originalValue) => (originalValue === "" ? null : value))
     .typeError("Ngày kết thúc không hợp lệ")
     .test(
       "after-start",
       "Ngày kết thúc phải sau hoặc bằng ngày bắt đầu",
       function (value) {
         const { discount_start_at } = this.parent;
-        return (
-          !value ||
-          !discount_start_at ||
-          new Date(value) >= new Date(discount_start_at)
-        );
+        if (!discount_start_at || !value) return true;
+        return new Date(value) >= new Date(discount_start_at);
       }
     ),
 

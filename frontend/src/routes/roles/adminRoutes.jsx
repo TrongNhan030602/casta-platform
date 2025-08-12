@@ -28,6 +28,7 @@ import ProductList from "@/containers/Admin/Products/ProductList ";
 import ProductCreatePage from "@/containers/Admin/Products/ProductCreatePage";
 import ProductEditPage from "@/containers/Admin/Products/ProductEditPage";
 import ProductDetailPage from "@/containers/Admin/Products/ProductDetailPage";
+import ExhibitionApprovalPage from "@/containers/Admin/ExhibitionApproval/ExhibitionApprovalPage";
 export const adminRoutes = [
   {
     path: "/admin",
@@ -123,6 +124,12 @@ export const adminRoutes = [
           {
             path: "products/:id",
             element: <ProductDetailPage />,
+          },
+
+          // Quản lý phê duyệt sản phẩm trong không gian trưng bày
+          {
+            path: "exhibition-approvals",
+            element: <ExhibitionApprovalPage />,
           },
         ],
       },

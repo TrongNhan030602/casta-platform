@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Resources\RentalContract;
 
+use App\Http\Resources\User\UserCompactResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class RentalContractResource extends JsonResource
@@ -12,6 +13,7 @@ class RentalContractResource extends JsonResource
             'code' => $this->resource->code,
             'status' => $this->resource->status?->value,
             'approved_at' => $this->resource->approved_at,
+            'creator' => new UserCompactResource($this->whenLoaded('creator')),
             'start_date' => $this->resource->start_date,
             'end_date' => $this->resource->end_date,
             'total_cost' => $this->resource->total_cost,

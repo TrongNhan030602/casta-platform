@@ -26,11 +26,7 @@ class AdminUpdateProductRequest extends FormRequest
             'price' => ['sometimes', 'numeric', 'min:0'],
             'status' => [
                 'sometimes',
-                Rule::in([
-                    ProductStatus::DRAFT->value,
-                    ProductStatus::DISABLED->value,
-                    ProductStatus::PENDING->value,
-                ]),
+                Rule::enum(ProductStatus::class),
             ],
 
 

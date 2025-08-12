@@ -6,6 +6,7 @@ use App\Enums\ProductStatus;
 use App\Models\RentalContract;
 
 use Illuminate\Support\Collection;
+use App\Enums\RentalContractStatus;
 use App\Enums\ExhibitionProductStatus;
 use App\Models\ExhibitionSpaceProduct;
 use App\Interfaces\ExhibitionSpaceProductInterface;
@@ -13,6 +14,40 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ExhibitionSpaceProductRepository implements ExhibitionSpaceProductInterface
 {
+
+    public function getAll(array $filters, int $perPage = 15): LengthAwarePaginator
+    {
+        $query = ExhibitionSpaceProduct::with([
+            'product.category',
+            'rentalContract.enterprise',
+            'rentalContract.space'
+        ]);
+
+        $query->when($filters['status'] ?? null, fn($q, $v) => $q->where('status', $v));
+        $query->when($filters['contract_id'] ?? null, fn($q, $v) => $q->where('rental_contract_id', $v));
+        $query->when($filters['product_id'] ?? null, fn($q, $v) => $q->where('product_id', $v));
+
+        $query->when($filters['enterprise_id'] ?? null, function ($q, $enterpriseId) {
+            $q->whereHas('rentalContract.enterprise', function ($subQ) use ($enterpriseId) {
+                $subQ->where('id', $enterpriseId);
+            });
+        });
+
+        $query->when($filters['keyword'] ?? null, function ($q, $kw) {
+            $kw = addcslashes($kw, '%_');
+            $q->whereHas(
+                'product',
+                fn($subQ) =>
+                $subQ->where('name', 'like', "%$kw%")
+            );
+        });
+
+        $sortBy = $filters['sort_by'] ?? 'created_at';
+        $sortOrder = $filters['sort_order'] ?? 'desc';
+
+        return $query->orderBy($sortBy, $sortOrder)->paginate($perPage);
+    }
+
 
     public function getMyProducts(int $enterpriseId): LengthAwarePaginator
     {
@@ -52,8 +87,13 @@ class ExhibitionSpaceProductRepository implements ExhibitionSpaceProductInterfac
                 ->where('status', ExhibitionProductStatus::APPROVED)
                 ->whereHas('product', function ($q) {
                     $q->where('status', ProductStatus::PUBLISHED);
+                })
+                ->whereHas('rentalContract', function ($q) {
+                    $q->where('status', RentalContractStatus::APPROVED)
+                        ->whereDate('end_date', '>=', now());
                 });
         }
+
 
         return $query->get();
     }

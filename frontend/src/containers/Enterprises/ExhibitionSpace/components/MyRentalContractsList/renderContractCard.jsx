@@ -1,14 +1,14 @@
 import React from "react";
 import { Col, Card } from "react-bootstrap";
 import { FaRedoAlt, FaTrashAlt } from "react-icons/fa";
-import { Link } from "react-router-dom";
+
 import Button from "@/components/common/Button";
 import Badge from "@/components/common/Badge";
 import { formatDateOnly } from "@/utils/formatDateOnly";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { STATUS_MAP } from "./statusMap";
 
-export const renderContractCard = (contract, onExtend, onCancel) => {
+export const renderContractCard = (contract, navigate, onExtend, onCancel) => {
   const status = STATUS_MAP[contract.status];
   const isExpired =
     contract.status === "approved" && new Date(contract.end_date) < new Date();
@@ -100,13 +100,17 @@ export const renderContractCard = (contract, onExtend, onCancel) => {
             )}
           </div>
           {contract.status === "approved" && (
-            <Link
-              to={`/enterprise/setup-exhibition/${contract.id}`}
-              className="btn btn-sm btn-primary mt-2"
+            <Button
+              size="sm"
+              variant="primary"
+              className="mt-2"
+              onClick={() =>
+                navigate(`/enterprise/setup-exhibition/${contract.id}`)
+              }
               title="Gắn sản phẩm trưng bày"
             >
               Gắn sản phẩm
-            </Link>
+            </Button>
           )}
         </Card.Body>
       </Card>

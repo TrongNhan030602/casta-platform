@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Row } from "react-bootstrap";
 import { toast } from "react-toastify";
-
 import {
   getMyRentalContracts,
   cancelRentalContract,
@@ -19,6 +19,7 @@ import filterFields from "./components/MyRentalContractsList/filterFields";
 import "@/assets/styles/layout/enterprise/rental-contract/my-rental-contracts-list.css";
 
 const MyRentalContractsList = () => {
+  const navigate = useNavigate();
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedContract, setSelectedContract] = useState(null);
@@ -111,6 +112,7 @@ const MyRentalContractsList = () => {
           {filteredContracts.map((contract) =>
             renderContractCard(
               contract,
+              navigate,
               (c) => openModal("extend", c),
               (c) => openModal("cancel", c)
             )
