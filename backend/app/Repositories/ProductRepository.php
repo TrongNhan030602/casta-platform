@@ -13,69 +13,6 @@ class ProductRepository implements ProductInterface
     {
         return Product::create($data);
     }
-    public function update(Product $product, array $data): Product
-    {
-        $product->update($data);
-        return $product;
-    }
-
-
-
-    public function delete(Product $product): bool
-    {
-        return $product->delete();
-    }
-    public function getCompactByEnterprise(int $enterpriseId)
-    {
-        return Product::query()
-            ->select(['id', 'name']) // ⚠️ chọn trường cần thiết
-            ->where('enterprise_id', $enterpriseId)
-            ->orderByDesc('created_at')
-            ->get();
-    }
-
-    public function updateStatus(Product $product, array $data): Product
-    {
-        $newStatus = ProductStatus::tryFrom($data['status']);
-        $currentStatus = $product->status;
-        $user = auth()->user();
-
-        if (!$newStatus) {
-            throw new \InvalidArgumentException('Trạng thái gửi lên không hợp lệ.');
-        }
-
-        if (!$currentStatus->canTransitionTo($newStatus)) {
-            throw new \DomainException("Không thể chuyển trạng thái từ '{$currentStatus->value}' sang '{$newStatus->value}'.");
-        }
-
-        if (in_array($newStatus, [ProductStatus::PUBLISHED, ProductStatus::REJECTED])) {
-            if (!$user || !$user->isSystemUser()) {
-                throw new \DomainException("Chỉ quản trị viên mới được duyệt hoặc từ chối sản phẩm.");
-            }
-        }
-
-        $updated = $product->update([
-            'status' => $newStatus,
-            'reason_rejected' => $newStatus === ProductStatus::REJECTED ? $data['reason_rejected'] ?? null : null,
-            'approved_by' => in_array($newStatus, [ProductStatus::PUBLISHED, ProductStatus::REJECTED]) ? $user->id : null,
-            'approved_at' => in_array($newStatus, [ProductStatus::PUBLISHED, ProductStatus::REJECTED]) ? now() : null,
-        ]);
-
-        return $updated ? $product->fresh(['enterprise.user']) : null;
-    }
-
-
-
-    public function restore(Product $product): bool
-    {
-        return $product->restore();
-    }
-
-    public function findWithTrashed(int $id): Product
-    {
-        return Product::withTrashed()->findOrFail($id);
-    }
-
     public function publicSearch(array $filters): LengthAwarePaginator
     {
         $query = Product::query()
@@ -166,6 +103,70 @@ class ProductRepository implements ProductInterface
 
         return $query->paginate($perPage);
     }
+    public function update(Product $product, array $data): Product
+    {
+        $product->update($data);
+        return $product;
+    }
+
+
+
+    public function delete(Product $product): bool
+    {
+        return $product->delete();
+    }
+    public function getCompactByEnterprise(int $enterpriseId)
+    {
+        return Product::query()
+            ->select(['id', 'name']) // ⚠️ chọn trường cần thiết
+            ->where('enterprise_id', $enterpriseId)
+            ->orderByDesc('created_at')
+            ->get();
+    }
+
+    public function updateStatus(Product $product, array $data): Product
+    {
+        $newStatus = ProductStatus::tryFrom($data['status']);
+        $currentStatus = $product->status;
+        $user = auth()->user();
+
+        if (!$newStatus) {
+            throw new \InvalidArgumentException('Trạng thái gửi lên không hợp lệ.');
+        }
+
+        if (!$currentStatus->canTransitionTo($newStatus)) {
+            throw new \DomainException("Không thể chuyển trạng thái từ '{$currentStatus->value}' sang '{$newStatus->value}'.");
+        }
+
+        if (in_array($newStatus, [ProductStatus::PUBLISHED, ProductStatus::REJECTED])) {
+            if (!$user || !$user->isSystemUser()) {
+                throw new \DomainException("Chỉ quản trị viên mới được duyệt hoặc từ chối sản phẩm.");
+            }
+        }
+
+        $updated = $product->update([
+            'status' => $newStatus,
+            'reason_rejected' => $newStatus === ProductStatus::REJECTED ? $data['reason_rejected'] ?? null : null,
+            'approved_by' => in_array($newStatus, [ProductStatus::PUBLISHED, ProductStatus::REJECTED]) ? $user->id : null,
+            'approved_at' => in_array($newStatus, [ProductStatus::PUBLISHED, ProductStatus::REJECTED]) ? now() : null,
+        ]);
+
+        return $updated ? $product->fresh(['enterprise.user']) : null;
+    }
+
+
+
+    public function restore(Product $product): bool
+    {
+        return $product->restore();
+    }
+
+    public function findWithTrashed(int $id): Product
+    {
+        return Product::withTrashed()->findOrFail($id);
+    }
+
+
 
 
 

@@ -23,7 +23,10 @@ class ProductService
         $this->repo = $repo;
         $this->stockLogService = $stockLogService;
     }
-
+    public function publicSearch(array $filters): LengthAwarePaginator
+    {
+        return $this->repo->publicSearch($filters);
+    }
     public function create(array $data): Product
     {
         $user = auth()->user();
@@ -236,10 +239,7 @@ class ProductService
     {
         return $this->repo->update($product, $data);
     }
-    public function publicSearch(array $filters): LengthAwarePaginator
-    {
-        return $this->repo->publicSearch($filters);
-    }
+
 
     /**
      * Tạo log và tăng/giảm tồn kho tương ứng

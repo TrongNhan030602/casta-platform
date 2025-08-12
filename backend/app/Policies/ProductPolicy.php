@@ -18,8 +18,7 @@ class ProductPolicy extends BasePolicy
 
     public function create(User $user): bool
     {
-        // Nếu cần profile đã duyệt thì dùng enterpriseApprovedAndOwns,
-        // còn create chưa có resource thì chỉ cần check là doanh nghiệp
+
         return $user->isEnterprise() && $user->hasApprovedProfile();
     }
 
