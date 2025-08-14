@@ -9,30 +9,47 @@ class Media extends Model
 {
     use SoftDeletes;
 
-    // Khai báo bảng (nếu cần, mặc định là 'media')
     protected $table = 'media';
 
-    // Các trường được phép gán hàng loạt
     protected $fillable = [
-        'disk',        // Vị trí lưu trữ (local, s3, etc)
-        'path',        // Đường dẫn file trên disk
-        'url',         // URL truy cập file (có thể null)
-        'mime',        // Kiểu file MIME
-        'size',        // Kích thước file (bytes)
-        'meta',        // Metadata dạng JSON (width, height, alt, caption,...)
-        'uploaded_by'  // ID người upload
+        'disk',        // local, s3...
+        'path',        // đường dẫn lưu file
+        'url',         // link truy cập file
+        'mime',        // kiểu file
+        'size',        // dung lượng
+        'meta',        // thông tin bổ sung (json)
+        'uploaded_by'  // id người upload
     ];
 
-    // Chuyển kiểu tự động cho trường meta
     protected $casts = [
         'meta' => 'array',
     ];
 
-    // Quan hệ người upload file
+    /**
+     * Người upload file
+     */
     public function uploader()
     {
-        return $this->belongsTo(\App\Models\User::class, 'uploaded_by');
+        return $this->belongsTo(User::class, 'uploaded_by');
     }
 
+    /**
+     * Liên kết với Posts
+     */
+    public function posts()
+    {
+        return $this->morphedByMany(Post::class, 'mediable')
+            ->withPivot('role') // để biết media này là featured / gallery / attachment
+            ->withTimestamps();
+    }
 
+    /**
+     * Liên kết với Services
+     */
+    public function services()
+    {
+        return $this->morphedByMany(Service::class, 'mediable')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
 }

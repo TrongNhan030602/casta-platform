@@ -1,21 +1,26 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\MediaController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\FeedbackController;
 use App\Http\Controllers\Api\ViolationController;
 use App\Http\Controllers\Api\EnterpriseController;
+use App\Http\Controllers\Api\NewsCategoryController;
 use App\Http\Controllers\Api\ProductImageController;
 use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\RentalContractController;
 use App\Http\Controllers\Api\ExhibitionMediaController;
 use App\Http\Controllers\Api\ExhibitionSpaceController;
-use App\Http\Controllers\Api\ProductStockLogController;
+use App\Http\Controllers\Api\ServiceCategoryController;
 use App\Http\Controllers\Api\ProductStockSummaryController;
 use App\Http\Controllers\Api\Public\PublicCategoryController;
 use App\Http\Controllers\Api\ExhibitionSpaceProductController;
@@ -574,4 +579,125 @@ Route::prefix('admin/products')->middleware(['auth:api'])->group(function () {
     // [QTHT] – Xoá ảnh khỏi sản phẩm
     Route::delete('{productId}/images/{imageId}', [ProductImageController::class, 'destroy']);
 
+});
+
+
+// ============================= Danh mục tin tức ===========================================
+Route::prefix('news-categories')
+    ->middleware(['auth:api']) // JWT guard
+    ->group(function () {
+
+        /**
+         * CRUD chính
+         */
+        Route::get('/', [NewsCategoryController::class, 'index']);       // GET danh sách
+        Route::post('/', [NewsCategoryController::class, 'store']);      // POST tạo mới
+        Route::get('/tree', [NewsCategoryController::class, 'tree']);    // GET cây danh mục
+        Route::get('/{id}', [NewsCategoryController::class, 'show']);    // GET chi tiết
+        Route::put('/{id}', [NewsCategoryController::class, 'update']);  // PUT cập nhật
+        Route::delete('/{id}', [NewsCategoryController::class, 'destroy']); // DELETE mềm
+    
+        /**
+         * Soft delete & thao tác đặc biệt
+         */
+        Route::patch('/{id}/restore', [NewsCategoryController::class, 'restore']); // PATCH khôi phục
+        Route::delete('/{id}/force-delete', [NewsCategoryController::class, 'forceDelete']); // DELETE vĩnh viễn
+    });
+
+// ============================= Danh mục dịch vụ ===========================================
+Route::prefix('service-categories')
+    ->middleware(['auth:api']) // JWT guard
+    ->group(function () {
+
+        /**
+         * CRUD chính
+         */
+        Route::get('/', [ServiceCategoryController::class, 'index']);        // GET danh sách
+        Route::post('/', [ServiceCategoryController::class, 'store']);       // POST tạo mới
+        Route::get('/tree', [ServiceCategoryController::class, 'tree']);     // GET cây danh mục
+        Route::get('/{id}', [ServiceCategoryController::class, 'show']);     // GET chi tiết
+        Route::put('/{id}', [ServiceCategoryController::class, 'update']);   // PUT cập nhật
+        Route::delete('/{id}', [ServiceCategoryController::class, 'destroy']); // DELETE mềm
+    
+        /**
+         * Soft delete & thao tác đặc biệt
+         */
+        Route::patch('/{id}/restore', [ServiceCategoryController::class, 'restore']);        // PATCH khôi phục
+        Route::delete('/{id}/force-delete', [ServiceCategoryController::class, 'forceDelete']); // DELETE vĩnh viễn
+    });
+
+
+// ============================= Bài viết ===========================================
+Route::prefix('posts')
+    ->middleware(['auth:api']) // JWT guard
+    ->group(function () {
+        Route::get('/', [PostController::class, 'index']);           // GET danh sách bài viết
+        Route::post('/', [PostController::class, 'store']);          // POST tạo mới bài viết
+        Route::get('/{id}', [PostController::class, 'show']);        // GET chi tiết bài viết
+        Route::put('/{id}', [PostController::class, 'update']);      // PUT cập nhật bài viết
+        Route::delete('/{id}', [PostController::class, 'destroy']);  // DELETE mềm bài viết
+    
+        // Soft delete & thao tác đặc biệt
+        Route::patch('/{id}/restore', [PostController::class, 'restore']);         // PATCH khôi phục bài viết
+        Route::delete('/{id}/force-delete', [PostController::class, 'forceDelete']); // DELETE vĩnh viễn bài viết
+    });
+
+
+// ============================= Dịch vụ ===========================================
+Route::prefix('services')
+    ->middleware(['auth:api']) // JWT guard
+    ->group(function () {
+        Route::get('/', [ServiceController::class, 'index']);           // GET danh sách dịch vụ
+        Route::post('/', [ServiceController::class, 'store']);          // POST tạo mới dịch vụ
+        Route::get('/{id}', [ServiceController::class, 'show']);        // GET chi tiết dịch vụ
+        Route::put('/{id}', [ServiceController::class, 'update']);      // PUT cập nhật dịch vụ
+        Route::delete('/{id}', [ServiceController::class, 'destroy']);  // DELETE mềm dịch vụ
+    
+        // Soft delete & thao tác đặc biệt
+        Route::patch('/{id}/restore', [ServiceController::class, 'restore']);         // PATCH khôi phục dịch vụ
+        Route::delete('/{id}/force-delete', [ServiceController::class, 'forceDelete']); // DELETE vĩnh viễn dịch vụ
+    });
+
+
+// =================================== Tags ================================================
+Route::prefix('tags')->middleware(['auth:api'])->group(function () {
+    // CRUD chính
+    Route::get('/', [TagController::class, 'index'])->name('index');
+    Route::post('/', [TagController::class, 'store'])->name('store');
+    Route::get('/{id}', [TagController::class, 'show'])->name('show');
+    Route::put('/{id}', [TagController::class, 'update'])->name('update');
+    Route::delete('/{id}', [TagController::class, 'destroy'])->name('destroy');
+
+    // Soft delete + restore + force delete
+    Route::patch('/{id}/restore', [TagController::class, 'restore'])->name('restore');
+    Route::delete('/{id}/force', [TagController::class, 'forceDelete'])->name('force-delete');
+
+    // Attach / detach tags vào model bất kỳ
+    Route::post('/attach/{type}/{id}', [TagController::class, 'attach'])->name('attach');
+    Route::post('/detach/{type}/{id}', [TagController::class, 'detach'])->name('detach');
+});
+
+
+
+// ======================== Media ===============================================
+Route::prefix('media')->middleware(['auth:api'])->group(function () {
+    // Các route tĩnh trước
+    Route::get('/for', [MediaController::class, 'getMediaFor']);    // GET /api/media/for
+
+    // Danh sách & chi tiết
+    Route::get('/', [MediaController::class, 'index']);            // GET /api/media
+    Route::get('/{id}', [MediaController::class, 'show']);        // GET /api/media/{id}
+
+    // Upload, cập nhật, xóa
+    Route::post('/', [MediaController::class, 'store']);           // POST /api/media
+    Route::put('/{id}', [MediaController::class, 'update']);      // PUT /api/media/{id}
+    Route::delete('/{id}', [MediaController::class, 'destroy']);  // DELETE /api/media/{id}
+
+    // Khôi phục / xóa vĩnh viễn
+    Route::patch('/{id}/restore', [MediaController::class, 'restore']);     // PATCH /api/media/{id}/restore
+    Route::delete('/{id}/force', [MediaController::class, 'forceDelete']); // DELETE /api/media/{id}/force
+
+    // Gán / gỡ Media vào model
+    Route::post('/attach', [MediaController::class, 'attachTo']);   // POST /api/media/attach
+    Route::post('/detach', [MediaController::class, 'detachFrom']); // POST /api/media/detach
 });

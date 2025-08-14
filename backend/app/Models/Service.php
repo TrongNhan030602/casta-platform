@@ -13,22 +13,20 @@ class Service extends Model
     protected $table = 'services';
 
     protected $fillable = [
-        'name',             // Tên dịch vụ
-        'slug',             // Đường dẫn thân thiện
-        'category_id',      // ID danh mục dịch vụ
-        'summary',          // Mô tả ngắn gọn
-        'content',          // Nội dung chi tiết
-        'price',            // Giá dịch vụ
-        'currency',         // Đơn vị tiền tệ
-        'duration_minutes', // Thời lượng (phút)
-        'features',         // Tính năng (json)
-        'featured_media_id',// Ảnh đại diện
-        'gallery',          // Bộ sưu tập ảnh (json)
-        'status',           // Trạng thái (draft, published, archived)
-        'created_by',       // Người tạo
-        'updated_by'        // Người cập nhật
+        'name',
+        'slug',
+        'category_id',
+        'summary',
+        'content',
+        'price',
+        'currency',
+        'duration_minutes',
+        'features',
+        'gallery',
+        'status',
+        'created_by',
+        'updated_by'
     ];
-
 
     protected $casts = [
         'features' => 'array',
@@ -38,22 +36,31 @@ class Service extends Model
         'status' => ServiceStatus::class,
     ];
 
-    // Quan hệ danh mục dịch vụ
+    // Relationships
     public function category()
     {
         return $this->belongsTo(ServiceCategory::class, 'category_id');
     }
 
-    // Quan hệ media nổi bật
-    public function featuredMedia()
-    {
-        return $this->belongsTo(Media::class, 'featured_media_id');
-    }
-
-    // Quan hệ tag
     public function tags()
     {
-        return $this->morphToMany(Tag::class, 'taggable');
+        return $this->morphToMany(Tag::class, 'taggable')->withTimestamps();
+    }
+
+    public function media()
+    {
+        return $this->morphToMany(Media::class, 'mediable')->withTimestamps();
+    }
+
+    // Nếu muốn phân loại media theo role, ví dụ featured/gallery
+    public function featuredMedia()
+    {
+        return $this->media()->wherePivot('role', 'featured');
+    }
+
+    public function galleryMedia()
+    {
+        return $this->media()->wherePivot('role', 'gallery');
     }
 
     // Kiểm tra trạng thái nhanh
@@ -79,18 +86,17 @@ class Service extends Model
     }
 
     // Lấy URL ảnh nổi bật
-    public function getFeaturedImageUrlAttribute()
+    public function getFeaturedImageUrlAttribute(): ?string
     {
-        return $this->featuredMedia?->url ?? null;
+        return $this->featuredMedia()->first()?->url;
     }
 
-    // Người tạo
+    // Người tạo / cập nhật
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    // Người cập nhật
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');

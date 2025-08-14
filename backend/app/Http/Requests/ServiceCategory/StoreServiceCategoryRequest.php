@@ -1,0 +1,53 @@
+<?php
+namespace App\Http\Requests\ServiceCategory;
+
+use Illuminate\Foundation\Http\FormRequest;
+use App\Enums\ServiceCategoryStatus;
+
+class StoreServiceCategoryRequest extends FormRequest
+{
+    public function authorize()
+    {
+        // Phân quyền xử lý ở controller/policy, nên trả về true ở đây
+        return true;
+    }
+
+    public function rules()
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:service_categories,slug',
+            'parent_id' => 'nullable|exists:service_categories,id',
+            'description' => 'nullable|string',
+            'image_id' => 'nullable|exists:media,id',
+            'order' => 'nullable|integer|min:0',
+            'status' => ['required', 'in:' . implode(',', ServiceCategoryStatus::values())],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'Tên danh mục là bắt buộc.',
+            'name.string' => 'Tên danh mục phải là chuỗi ký tự.',
+            'name.max' => 'Tên danh mục không được vượt quá 255 ký tự.',
+
+            'slug.required' => 'Slug là bắt buộc.',
+            'slug.string' => 'Slug phải là chuỗi ký tự.',
+            'slug.max' => 'Slug không được vượt quá 255 ký tự.',
+            'slug.unique' => 'Slug đã tồn tại, vui lòng chọn slug khác.',
+
+            'parent_id.exists' => 'Danh mục cha không hợp lệ.',
+
+            'description.string' => 'Mô tả phải là chuỗi ký tự.',
+
+            'image_id.exists' => 'Ảnh không tồn tại.',
+
+            'order.integer' => 'Thứ tự phải là số nguyên.',
+            'order.min' => 'Thứ tự phải là số nguyên không âm.',
+
+            'status.required' => 'Trạng thái là bắt buộc.',
+            'status.in' => 'Trạng thái không hợp lệ.',
+        ];
+    }
+}

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Tag extends Model
 {
     use SoftDeletes;
+    protected $table = 'tags';
 
     protected $fillable = [
         'name', // Tên tag
@@ -29,4 +30,15 @@ class Tag extends Model
     {
         return $this->morphedByMany(Service::class, 'taggable');
     }
+
+    public function featuredInPosts()
+    {
+        return $this->hasMany(Post::class, 'featured_media_id');
+    }
+
+    public function featuredInServices()
+    {
+        return $this->hasMany(Service::class, 'featured_media_id');
+    }
+
 }

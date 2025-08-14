@@ -11,29 +11,29 @@ use App\Enums\PostStatus;
 class Post extends Model
 {
     use SoftDeletes;
+
     protected $table = 'posts';
 
     protected $fillable = [
-        'type',           // loại bài: news/event
-        'title',          // tiêu đề bài viết
-        'slug',           // đường dẫn thân thiện
-        'category_id',    // danh mục tin tức
-        'summary',        // tóm tắt
-        'content',        // nội dung chi tiết
-        'featured_media_id', // ảnh nổi bật
-        'gallery',        // bộ sưu tập ảnh (json)
-        'tags_cached',    // cache tag dạng string
-        'status',         // trạng thái bài
-        'is_sticky',      // ghim bài
-        'published_at',   // ngày xuất bản
-        'author_id',      // tác giả
-        'event_location', // địa điểm sự kiện
-        'event_start',    // bắt đầu sự kiện
-        'event_end',      // kết thúc sự kiện
-        'meta_title',     // meta SEO tiêu đề
-        'meta_description', // meta SEO mô tả
-        'created_by',     // người tạo
-        'updated_by'      // người cập nhật
+        'type',
+        'title',
+        'slug',
+        'category_id',
+        'summary',
+        'content',
+        'gallery',
+        'tags_cached',
+        'status',
+        'is_sticky',
+        'published_at',
+        'author_id',
+        'event_location',
+        'event_start',
+        'event_end',
+        'meta_title',
+        'meta_description',
+        'created_by',
+        'updated_by'
     ];
 
     protected $casts = [
@@ -44,6 +44,7 @@ class Post extends Model
         'published_at' => 'datetime',
     ];
 
+    // Relationships
     public function category()
     {
         return $this->belongsTo(NewsCategory::class, 'category_id');
@@ -54,17 +55,28 @@ class Post extends Model
         return $this->belongsTo(\App\Models\User::class, 'author_id');
     }
 
-    public function featuredMedia()
-    {
-        return $this->belongsTo(Media::class, 'featured_media_id');
-    }
-
     public function tags()
     {
-        return $this->morphToMany(Tag::class, 'taggable');
+        return $this->morphToMany(Tag::class, 'taggable')->withTimestamps();
     }
 
-    // Helper kiểm tra loại bài viết
+    public function media()
+    {
+        return $this->morphToMany(Media::class, 'mediable')->withTimestamps();
+    }
+
+    // Nếu muốn phân loại media theo role, ví dụ featured/gallery
+    public function featuredMedia()
+    {
+        return $this->media()->wherePivot('role', 'featured');
+    }
+
+    public function galleryMedia()
+    {
+        return $this->media()->wherePivot('role', 'gallery');
+    }
+
+    // Helpers kiểm tra loại bài viết
     public function isNews(): bool
     {
         return $this->type === PostType::NEWS;
@@ -75,7 +87,7 @@ class Post extends Model
         return $this->type === PostType::EVENT;
     }
 
-    // Helper kiểm tra trạng thái
+    // Helpers trạng thái
     public function isPublished(): bool
     {
         return $this->status === PostStatus::PUBLISHED;
@@ -91,44 +103,44 @@ class Post extends Model
         return $this->status === PostStatus::ARCHIVED;
     }
 
-    // Scope lọc theo status
+    // Scopes
     public function scopeStatus($query, PostStatus $status)
     {
         return $query->where('status', $status->value);
     }
 
-    // Scope lọc theo type
     public function scopeType($query, PostType $type)
     {
         return $query->where('type', $type->value);
     }
 
-    // helper để tạo slug duy nhất
-    public static function makeSlug($title)
+    // Helper tạo slug duy nhất
+    public static function makeSlug(string $title): string
     {
         $base = Str::slug($title, '-');
         $slug = $base;
         $i = 1;
+
         while (self::where('slug', $slug)->withTrashed()->exists()) {
             $slug = "{$base}-{$i}";
             $i++;
         }
+
         return $slug;
     }
 
-    // Lấy URL ảnh nổi bật
-    public function getFeaturedImageUrlAttribute()
+    // Lấy URL featured image đầu tiên
+    public function getFeaturedImageUrlAttribute(): ?string
     {
-        return $this->featuredMedia?->url ?? null;
+        return $this->featuredMedia()->first()?->url;
     }
 
-    // Người tạo
+    // Người tạo / cập nhật
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    // Người cập nhật
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
