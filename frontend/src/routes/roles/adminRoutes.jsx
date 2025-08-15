@@ -29,6 +29,10 @@ import ProductCreatePage from "@/containers/Admin/Products/ProductCreatePage";
 import ProductEditPage from "@/containers/Admin/Products/ProductEditPage";
 import ProductDetailPage from "@/containers/Admin/Products/ProductDetailPage";
 import ExhibitionApprovalPage from "@/containers/Admin/ExhibitionApproval/ExhibitionApprovalPage";
+import NewsCategoryList from "@/containers/Admin/NewsCategory/NewsCategoryList";
+import NewsCategoryCreatePage from "@/containers/Admin/NewsCategory/NewsCategoryCreatePage";
+import NewsCategoryEditPage from "@/containers/Admin/NewsCategory/NewsCategoryEditPage";
+
 export const adminRoutes = [
   {
     path: "/admin",
@@ -130,6 +134,20 @@ export const adminRoutes = [
           {
             path: "exhibition-approvals",
             element: <ExhibitionApprovalPage />,
+          },
+
+          // Danh mục tin tức- sự kiện
+          {
+            path: "news-categories",
+            element: <NewsCategoryList />,
+          },
+          {
+            path: "news-categories/create",
+            element: <NewsCategoryCreatePage />,
+          },
+          {
+            path: "news-categories/:id/edit",
+            element: <NewsCategoryEditPage />,
           },
         ],
       },

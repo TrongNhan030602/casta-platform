@@ -11,11 +11,23 @@ use RuntimeException;
 
 class NewsCategoryRepository implements NewsCategoryInterface
 {
+
+    public function getTree()
+    {
+        return NewsCategory::with([
+            'children' => function ($q) {
+                $q->with('children'); // cấp 2
+            }
+        ])->whereNull('parent_id')->get();
+    }
+
     public function publicSearch(array $filters): LengthAwarePaginator
     {
         $query = NewsCategory::query();
 
+        // -------------------------
         // Lọc soft delete
+        // -------------------------
         if (!empty($filters['deleted'])) {
             if ($filters['deleted'] === 'only') {
                 $query->onlyTrashed();
@@ -28,22 +40,41 @@ class NewsCategoryRepository implements NewsCategoryInterface
             $query->withoutTrashed();
         }
 
+        // -------------------------
         // Lọc trạng thái
+        // -------------------------
         if (!empty($filters['status']) && in_array($filters['status'], NewsCategoryStatus::values())) {
             $query->where('status', $filters['status']);
         }
 
-        // Tìm kiếm theo tên hoặc slug
-        if (!empty($filters['keyword'])) {
+        // -------------------------
+        // Lọc danh mục cha
+        // -------------------------
+        if (isset($filters['parent_id'])) {
+            if ((int) $filters['parent_id'] === 0) {
+                $query->whereNull('parent_id');
+            } elseif (!empty($filters['parent_id'])) {
+                $query->where('parent_id', $filters['parent_id']);
+            }
+        }
+
+        // -------------------------
+        // Tìm kiếm theo keyword >= 3 ký tự (chỉ khi nhập)
+        // -------------------------
+        if (!empty($filters['keyword']) && mb_strlen(trim($filters['keyword'])) >= 3) {
             $keyword = trim($filters['keyword']);
             $query->where(function ($q) use ($keyword) {
                 $q->where('name', 'like', "%{$keyword}%")
                     ->orWhere('slug', 'like', "%{$keyword}%");
             });
         }
+        // Nếu keyword < 3 ký tự hoặc rỗng, không áp dụng filter → hiển thị tất cả
 
-        // Sắp xếp, phân trang
-        $sortBy = in_array($filters['sort_by'] ?? '', ['id', 'name', 'order', 'created_at']) ? $filters['sort_by'] : 'order';
+        // -------------------------
+        // Sắp xếp và phân trang
+        // -------------------------
+        $validSortColumns = ['id', 'name', 'order', 'created_at'];
+        $sortBy = in_array($filters['sort_by'] ?? '', $validSortColumns) ? $filters['sort_by'] : 'order';
         $sortOrder = in_array(strtolower($filters['sort_order'] ?? ''), ['asc', 'desc']) ? $filters['sort_order'] : 'asc';
         $perPage = $filters['per_page'] ?? 15;
 
@@ -51,6 +82,8 @@ class NewsCategoryRepository implements NewsCategoryInterface
 
         return $query->with(['createdBy', 'updatedBy'])->paginate($perPage);
     }
+
+
 
     public function store(array $data): NewsCategory
     {
@@ -111,13 +144,13 @@ class NewsCategoryRepository implements NewsCategoryInterface
 
     public function find(int $id): NewsCategory
     {
-        return NewsCategory::with([
-            'parent',
-            'image',
-            'createdBy',
-            'updatedBy'
-        ])
-            ->withTrashed()
+        return NewsCategory::withTrashed()
+            ->with([
+                'parent',
+                'image',
+                'createdBy',
+                'updatedBy'
+            ])
             ->findOrFail($id);
     }
 
@@ -201,8 +234,5 @@ class NewsCategoryRepository implements NewsCategoryInterface
         }
     }
 
-    public function getTree()
-    {
-        return NewsCategory::with('children')->whereNull('parent_id')->get();
-    }
+
 }

@@ -66,4 +66,36 @@ export const flattenCategoryTreeForBreadcrumb = (tree, prefix = "") => {
   return result;
 };
 
+/**
+ * Flatten tree cho dropdown, chỉ cho phép chọn tối đa cấp 2 làm cha
+ */
+export const flattenCategoryTreeForDropdownMaxLevel2 = (
+  tree,
+  depth = 0,
+  maxDepth = 2
+) => {
+  let result = [];
+
+  tree.forEach((node) => {
+    if (depth < maxDepth) {
+      result.push({
+        value: String(node.id),
+        label: `${"— ".repeat(depth)}${node.name}`,
+      });
+
+      if (node.children && node.children.length > 0) {
+        result = result.concat(
+          flattenCategoryTreeForDropdownMaxLevel2(
+            node.children,
+            depth + 1,
+            maxDepth
+          )
+        );
+      }
+    }
+  });
+
+  return result;
+};
+
 export default flattenCategoryTree;

@@ -41,6 +41,16 @@ const menuItems = [
     icon: <FaThList />,
   },
   {
+    to: "/admin/product-categories",
+    label: "Danh mục sản phẩm",
+    icon: <FaThList />,
+  },
+  {
+    to: "/admin/news-categories",
+    label: "Danh mục tin tức - sự kiện",
+    icon: <FaThList />,
+  },
+  {
     to: "/admin/exhibition-spaces",
     label: "Không gian trưng bày",
     icon: <FaBox />,
@@ -56,11 +66,6 @@ const menuItems = [
     icon: <FaCheckSquare />,
   },
 
-  {
-    to: "/admin/product-categories",
-    label: "Danh mục sản phẩm",
-    icon: <FaTags />,
-  },
   {
     to: "/admin/products",
     label: "Sản phẩm",

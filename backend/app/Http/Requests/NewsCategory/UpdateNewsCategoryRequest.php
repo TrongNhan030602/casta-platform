@@ -2,6 +2,7 @@
 namespace App\Http\Requests\NewsCategory;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use App\Enums\NewsCategoryStatus;
 
 class UpdateNewsCategoryRequest extends FormRequest
@@ -13,12 +14,22 @@ class UpdateNewsCategoryRequest extends FormRequest
 
     public function rules()
     {
-        $categoryId = $this->route('id');
+        $categoryId = $this->route('id'); // ID hiện tại
 
         return [
             'name' => 'required|string|max:255',
-            'slug' => "required|string|max:255|unique:news_categories,slug,{$categoryId}",
-            'parent_id' => 'nullable|exists:news_categories,id|not_in:' . $categoryId,
+            'slug' => [
+                'required',
+                'string',
+                'max:255',
+                // Bỏ qua bản ghi hiện tại để không báo trùng
+                Rule::unique('news_categories', 'slug')->ignore($categoryId),
+            ],
+            'parent_id' => [
+                'nullable',
+                'exists:news_categories,id',
+                'not_in:' . $categoryId, // không được trùng chính nó
+            ],
             'description' => 'nullable|string',
             'image_id' => 'nullable|exists:media,id',
             'order' => 'nullable|integer|min:0',
@@ -50,7 +61,6 @@ class UpdateNewsCategoryRequest extends FormRequest
 
             'status.required' => 'Trạng thái là bắt buộc.',
             'status.in' => 'Trạng thái không hợp lệ.',
-
         ];
     }
 }

@@ -22,6 +22,8 @@ class NewsCategoryResource extends JsonResource
             'created_at' => $this->created_at ? $this->created_at->toDateTimeString() : null,
             'updated_at' => $this->updated_at ? $this->updated_at->toDateTimeString() : null,
 
+            'deleted_at' => $this->deleted_at ? $this->deleted_at->toDateTimeString() : null, // <-- Thêm dòng này
+
             'parent_category' => $this->whenLoaded('parent') ? new self($this->parent) : null,
             'image' => $this->whenLoaded('image') ? $this->image : null,
 

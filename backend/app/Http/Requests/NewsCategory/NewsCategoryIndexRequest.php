@@ -11,6 +11,14 @@ class NewsCategoryIndexRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        // Nếu parent_id là chuỗi rỗng thì set thành null
+        if ($this->has('parent_id') && $this->parent_id === '') {
+            $this->merge(['parent_id' => null]);
+        }
+    }
+
     public function rules()
     {
         return [
@@ -20,6 +28,7 @@ class NewsCategoryIndexRequest extends FormRequest
             'sort_by' => ['nullable', 'in:id,name,order,created_at'],
             'sort_order' => ['nullable', 'in:asc,desc'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
+            'parent_id' => ['nullable', 'integer'],
         ];
     }
 
@@ -29,12 +38,13 @@ class NewsCategoryIndexRequest extends FormRequest
             'status.in' => 'Giá trị trạng thái không hợp lệ. Vui lòng chọn trong danh sách hợp lệ.',
             'keyword.string' => 'Từ khóa tìm kiếm phải là chuỗi ký tự.',
             'keyword.max' => 'Từ khóa tìm kiếm không được vượt quá 255 ký tự.',
-            'deleted.in' => 'Giá trị lọc trạng thái xóa không hợp lệ. Phải là one của: only, all, none.',
-            'sort_by.in' => 'Trường sắp xếp không hợp lệ. Chỉ chấp nhận: name, order, created_at.',
+            'deleted.in' => 'Giá trị lọc trạng thái xóa không hợp lệ. Phải là một trong: only, all, none.',
+            'sort_by.in' => 'Trường sắp xếp không hợp lệ. Chỉ chấp nhận: id, name, order, created_at.',
             'sort_order.in' => 'Thứ tự sắp xếp không hợp lệ. Chỉ chấp nhận: asc hoặc desc.',
             'per_page.integer' => 'Số bản ghi trên trang phải là số nguyên.',
             'per_page.min' => 'Số bản ghi trên trang phải lớn hơn hoặc bằng 1.',
             'per_page.max' => 'Số bản ghi trên trang không được vượt quá 100.',
+            'parent_id.integer' => 'Danh mục cha phải là số nguyên.',
         ];
     }
 }
