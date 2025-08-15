@@ -1,4 +1,3 @@
-// NewsCategoryForm.jsx
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -6,12 +5,12 @@ import * as yup from "yup";
 import FormGroup from "@/components/common/FormGroup";
 import SelectBox from "@/components/common/SelectBox";
 import Button from "@/components/common/Button";
-import { useNewsCategoryTree } from "@/hooks/useNewsCategoryTree";
+import { useServiceCategoryTree } from "@/hooks/useServiceCategoryTree";
 import { generateSlug } from "@/utils/string";
 import {
-  NEWS_CATEGORY_STATUS_OPTIONS,
-  NEWS_CATEGORY_STATUSES,
-} from "@/constants/newsCategoryStatus";
+  SERVICE_CATEGORY_STATUS_OPTIONS,
+  SERVICE_CATEGORY_STATUSES,
+} from "@/constants/serviceCategoryStatus";
 
 // Schema validation
 const schema = yup.object({
@@ -23,18 +22,17 @@ const schema = yup.object({
   status: yup
     .string()
     .required("Trạng thái là bắt buộc.")
-    .oneOf(Object.keys(NEWS_CATEGORY_STATUSES), "Trạng thái không hợp lệ."),
+    .oneOf(Object.keys(SERVICE_CATEGORY_STATUSES), "Trạng thái không hợp lệ."),
 });
 
-const NewsCategoryForm = ({
+const ServiceCategoryForm = ({
   defaultValues = {},
   isEdit = false,
   categoryId = null,
   onSubmit,
   loading: externalLoading = false,
 }) => {
-  // Dùng hook hỗ trợ maxLevel2 = true để chỉ hiển thị tối đa cấp 2
-  const { data: categoryOptions = [] } = useNewsCategoryTree(true);
+  const { data: categoryOptions = [] } = useServiceCategoryTree(true);
   const [isSlugEdited, setIsSlugEdited] = useState(false);
 
   const {
@@ -61,7 +59,6 @@ const NewsCategoryForm = ({
   const watchName = watch("name");
   const watchSlug = watch("slug");
 
-  // Tự động generate slug khi tên thay đổi nếu chưa chỉnh
   useEffect(() => {
     if (!isSlugEdited) setValue("slug", generateSlug(watchName));
   }, [watchName, isSlugEdited, setValue]);
@@ -71,7 +68,6 @@ const NewsCategoryForm = ({
     setValue("slug", e.target.value);
   };
 
-  // Reset form khi edit
   useEffect(() => {
     if (isEdit && Object.keys(defaultValues).length) {
       reset(defaultValues);
@@ -79,7 +75,6 @@ const NewsCategoryForm = ({
     }
   }, [defaultValues, isEdit, reset]);
 
-  // Filter dropdown loại bỏ chính category đang edit
   const filteredOptions = categoryOptions.filter(
     (cat) => cat.value !== categoryId
   );
@@ -121,7 +116,7 @@ const NewsCategoryForm = ({
       <SelectBox
         id="parent_id"
         label="Danh mục cha"
-        value={watch("parent_id") ?? ""}
+        value={watch("parent_id")}
         onChange={(v) => {
           const normalized = v === "" ? null : Number(v);
           setValue("parent_id", normalized);
@@ -141,7 +136,7 @@ const NewsCategoryForm = ({
         label="Trạng thái"
         value={watch("status")}
         onChange={(v) => setValue("status", v)}
-        options={NEWS_CATEGORY_STATUS_OPTIONS}
+        options={SERVICE_CATEGORY_STATUS_OPTIONS}
         error={errors.status?.message}
       />
       <div style={{ marginTop: 20 }}>
@@ -156,4 +151,4 @@ const NewsCategoryForm = ({
   );
 };
 
-export default NewsCategoryForm;
+export default ServiceCategoryForm;

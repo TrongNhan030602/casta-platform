@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 // Custom components
 import ProductCategoryForm from "./components/ProductCategoryForm";
 import Button from "@/components/common/Button";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 // Services
 import {
@@ -62,7 +63,7 @@ const ProductCategoryEditPage = () => {
   };
 
   if (fetching) {
-    return <p>Đang tải dữ liệu danh mục...</p>;
+    return <LoadingSpinner text="Đang tải dữ liệu..." />;
   }
 
   return (

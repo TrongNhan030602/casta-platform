@@ -19,6 +19,7 @@ class ServiceCategoryIndexRequest extends FormRequest
             'deleted' => ['nullable', 'in:only,all,none'],
             'sort_by' => ['nullable', 'in:id,name,order,created_at'],
             'sort_order' => ['nullable', 'in:asc,desc'],
+            'parent_id' => ['nullable', 'integer'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
         ];
     }
@@ -34,6 +35,7 @@ class ServiceCategoryIndexRequest extends FormRequest
             'sort_order.in' => 'Thứ tự sắp xếp không hợp lệ. Chỉ chấp nhận: asc hoặc desc.',
             'per_page.integer' => 'Số bản ghi trên trang phải là số nguyên.',
             'per_page.min' => 'Số bản ghi trên trang phải lớn hơn hoặc bằng 1.',
+            'parent_id.integer' => 'Danh mục cha phải là số nguyên.',
             'per_page.max' => 'Số bản ghi trên trang không được vượt quá 100.',
         ];
     }

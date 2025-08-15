@@ -17,4 +17,5 @@ export const pageTitles = {
   "/admin/orders": "Quản lý đơn hàng",
   "/admin/reports": "Báo cáo thống kê",
   "/admin/news-categories": "Danh mục Tin tức - Sự kiện",
+  "/admin/services-categories": "Danh mục Dịch vụ",
 };

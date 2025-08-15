@@ -3,22 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { flattenCategoryTreeForDropdownMaxLevel2 } from "@/utils/flattenCategoryTree";
 import {
-  getNewsCategoryList,
-  deleteNewsCategory,
-  restoreNewsCategory,
-  forceDeleteNewsCategory,
-  getNewsCategoryTree,
-} from "@/services/admin/newsCategoriesService";
+  getServiceCategoryList,
+  deleteServiceCategory,
+  restoreServiceCategory,
+  forceDeleteServiceCategory,
+  getServiceCategoryTree,
+} from "@/services/admin/serviceCategoriesService";
 
 import DataTable from "@/components/common/DataTable";
 import Button from "@/components/common/Button";
 import CommonFilterBar from "@/components/common/FilterBar";
 
-import NewsCategoryColumns from "./components/NewsCategoryList/NewsCategoryColumns";
-import getNewsCategoryFilterFields from "./components/NewsCategoryList/NewsCategoryFilters";
-import NewsCategoryConfirmModal from "./components/NewsCategoryList/NewsCategoryConfirmModal";
+import ServiceCategoryColumns from "./components/ServiceCategoryList/ServiceCategoryColumns";
+import getServiceCategoryFilterFields from "./components/ServiceCategoryList/getServiceCategoryFilterFields";
+import ServiceCategoryConfirmModal from "./components/ServiceCategoryList/ServiceCategoryConfirmModal";
 
-const NewsCategoryList = () => {
+const ServiceCategoryList = () => {
   const navigate = useNavigate();
 
   // ---------------------------
@@ -58,12 +58,12 @@ const NewsCategoryList = () => {
   }, [keyword]);
 
   // ---------------------------
-  // Load root categories và flatten cache max cấp 2
+  // Load root categories
   // ---------------------------
   useEffect(() => {
     const fetchRootCategories = async () => {
       try {
-        const res = await getNewsCategoryTree();
+        const res = await getServiceCategoryTree();
         const flattened = flattenCategoryTreeForDropdownMaxLevel2(
           res.data?.data || []
         ).map((cat) => ({
@@ -79,13 +79,13 @@ const NewsCategoryList = () => {
   }, []);
 
   const filterFields = useMemo(
-    () => getNewsCategoryFilterFields(rootCategories),
+    () => getServiceCategoryFilterFields(rootCategories),
     [rootCategories]
   );
 
   const columns = useMemo(
     () =>
-      NewsCategoryColumns(navigate, (category, type) => {
+      ServiceCategoryColumns(navigate, (category, type) => {
         setCategoryAction({ category, type });
         setShowConfirmModal(true);
       }),
@@ -99,7 +99,7 @@ const NewsCategoryList = () => {
     const fetchCategories = async () => {
       setLoading(true);
       try {
-        const res = await getNewsCategoryList({
+        const res = await getServiceCategoryList({
           page,
           per_page: Number(filters.perPage) || 10,
           keyword: debouncedKeyword || undefined,
@@ -114,7 +114,7 @@ const NewsCategoryList = () => {
         setTotalPages(res.data?.meta?.last_page || 1);
         setTotalItems(res.data?.meta?.total || 0);
       } catch {
-        toast.error("Không thể tải danh sách danh mục tin tức");
+        toast.error("Không thể tải danh sách danh mục dịch vụ");
       } finally {
         setLoading(false);
       }
@@ -128,15 +128,16 @@ const NewsCategoryList = () => {
   const handleConfirmAction = async () => {
     const { category, type } = categoryAction;
     try {
-      if (type === "delete") await deleteNewsCategory(category.id);
-      else if (type === "force") await forceDeleteNewsCategory(category.id);
-      else if (type === "restore") await restoreNewsCategory(category.id);
+      if (type === "delete") await deleteServiceCategory(category.id);
+      else if (type === "force") await forceDeleteServiceCategory(category.id);
+      else if (type === "restore") await restoreServiceCategory(category.id);
 
       toast.success(
         type === "restore" ? "Khôi phục thành công" : "Xoá thành công"
       );
+
       // fetch lại categories
-      const res = await getNewsCategoryList({
+      const res = await getServiceCategoryList({
         page,
         per_page: Number(filters.perPage) || 10,
         keyword: debouncedKeyword || undefined,
@@ -180,12 +181,12 @@ const NewsCategoryList = () => {
   };
 
   return (
-    <div className="news-category-list">
+    <div className="service-category-list">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="page-title">Quản lý danh mục tin tức - sự kiện</h2>
+        <h2 className="page-title">Quản lý danh mục dịch vụ</h2>
         <Button
           variant="primary"
-          onClick={() => navigate("/admin/news-categories/create")}
+          onClick={() => navigate("/admin/services-categories/create")}
         >
           + Thêm mới
         </Button>
@@ -216,7 +217,7 @@ const NewsCategoryList = () => {
         }}
       />
 
-      <NewsCategoryConfirmModal
+      <ServiceCategoryConfirmModal
         open={showConfirmModal}
         actionType={categoryAction.type}
         onCancel={() => setShowConfirmModal(false)}
@@ -226,4 +227,4 @@ const NewsCategoryList = () => {
   );
 };
 
-export default NewsCategoryList;
+export default ServiceCategoryList;

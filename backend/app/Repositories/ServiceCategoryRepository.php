@@ -32,6 +32,14 @@ class ServiceCategoryRepository implements ServiceCategoryInterface
         if (!empty($filters['status']) && in_array($filters['status'], ServiceCategoryStatus::values())) {
             $query->where('status', $filters['status']);
         }
+        // Lọc danh mục cha
+        if (isset($filters['parent_id'])) {
+            if ((int) $filters['parent_id'] === 0) {
+                $query->whereNull('parent_id');
+            } elseif (!empty($filters['parent_id'])) {
+                $query->where('parent_id', $filters['parent_id']);
+            }
+        }
 
         // Tìm kiếm theo tên hoặc slug
         if (!empty($filters['keyword'])) {
@@ -111,13 +119,13 @@ class ServiceCategoryRepository implements ServiceCategoryInterface
 
     public function find(int $id): ServiceCategory
     {
-        return ServiceCategory::with([
-            'parent',
-            'image',
-            'createdBy',
-            'updatedBy'
-        ])
-            ->withTrashed()
+        return ServiceCategory::withTrashed()
+            ->with([
+                'parent',
+                'image',
+                'createdBy',
+                'updatedBy'
+            ])
             ->findOrFail($id);
     }
 
@@ -203,6 +211,10 @@ class ServiceCategoryRepository implements ServiceCategoryInterface
 
     public function getTree()
     {
-        return ServiceCategory::with('children')->whereNull('parent_id')->get();
+        return ServiceCategory::with([
+            'children' => function ($q) {
+                $q->with('children'); // cấp 2
+            }
+        ])->whereNull('parent_id')->get();
     }
 }

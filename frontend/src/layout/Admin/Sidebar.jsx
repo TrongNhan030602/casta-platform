@@ -51,6 +51,11 @@ const menuItems = [
     icon: <FaThList />,
   },
   {
+    to: "/admin/services-categories",
+    label: "Danh mục dịch vụ",
+    icon: <FaThList />,
+  },
+  {
     to: "/admin/exhibition-spaces",
     label: "Không gian trưng bày",
     icon: <FaBox />,

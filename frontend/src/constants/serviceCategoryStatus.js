@@ -1,9 +1,9 @@
-// src/constants/newsCategoryStatus.js
+// src/constants/serviceCategoryStatus.js
 
-export const NEWS_CATEGORY_STATUSES = {
+export const SERVICE_CATEGORY_STATUSES = {
   draft: {
     value: "draft",
-    label: "Bản nháp",
+    label: "Nháp",
     color: "secondary",
   },
   published: {
@@ -19,6 +19,6 @@ export const NEWS_CATEGORY_STATUSES = {
 };
 
 // Dùng cho dropdown, select filter...
-export const NEWS_CATEGORY_STATUS_OPTIONS = Object.values(
-  NEWS_CATEGORY_STATUSES
+export const SERVICE_CATEGORY_STATUS_OPTIONS = Object.values(
+  SERVICE_CATEGORY_STATUSES
 ).map(({ value, label }) => ({ value, label }));

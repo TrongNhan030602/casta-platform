@@ -32,6 +32,9 @@ import ExhibitionApprovalPage from "@/containers/Admin/ExhibitionApproval/Exhibi
 import NewsCategoryList from "@/containers/Admin/NewsCategory/NewsCategoryList";
 import NewsCategoryCreatePage from "@/containers/Admin/NewsCategory/NewsCategoryCreatePage";
 import NewsCategoryEditPage from "@/containers/Admin/NewsCategory/NewsCategoryEditPage";
+import ServiceCategoryList from "@/containers/Admin/ServiceCategory/ServiceCategoryList";
+import ServiceCategoryCreatePage from "@/containers/Admin/ServiceCategory/ServiceCategoryCreatePage";
+import ServiceCategoryEditPage from "@/containers/Admin/ServiceCategory/ServiceCategoryEditPage";
 
 export const adminRoutes = [
   {
@@ -148,6 +151,19 @@ export const adminRoutes = [
           {
             path: "news-categories/:id/edit",
             element: <NewsCategoryEditPage />,
+          },
+          // Danh mục dịch vụ
+          {
+            path: "services-categories",
+            element: <ServiceCategoryList />,
+          },
+          {
+            path: "services-categories/create",
+            element: <ServiceCategoryCreatePage />,
+          },
+          {
+            path: "services-categories/:id/edit",
+            element: <ServiceCategoryEditPage />,
           },
         ],
       },
