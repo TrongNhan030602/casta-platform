@@ -113,7 +113,6 @@ class PostController extends BaseApiController
     public function forceDelete(Request $request, int $id): JsonResponse
     {
         return $this->safe(function () use ($request, $id) {
-            // Tương tự restore, tìm với withTrashed để forceDelete
             $post = $this->service->find($id);
             $this->authorize('forceDelete', $post);
 

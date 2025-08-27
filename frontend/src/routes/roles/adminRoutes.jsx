@@ -35,6 +35,11 @@ import NewsCategoryEditPage from "@/containers/Admin/NewsCategory/NewsCategoryEd
 import ServiceCategoryList from "@/containers/Admin/ServiceCategory/ServiceCategoryList";
 import ServiceCategoryCreatePage from "@/containers/Admin/ServiceCategory/ServiceCategoryCreatePage";
 import ServiceCategoryEditPage from "@/containers/Admin/ServiceCategory/ServiceCategoryEditPage";
+import PostList from "@/containers/Admin/Post/PostList";
+import PostCreatePage from "@/containers/Admin/Post/PostCreatePage";
+import PostEditPage from "@/containers/Admin/Post/PostEditPage";
+
+import ServiceList from "@/containers/Admin/Services/ServiceList";
 
 export const adminRoutes = [
   {
@@ -164,6 +169,26 @@ export const adminRoutes = [
           {
             path: "services-categories/:id/edit",
             element: <ServiceCategoryEditPage />,
+          },
+
+          // Bài Viết (tin tức - sự kiện)
+          {
+            path: "posts",
+            element: <PostList />,
+          },
+          {
+            path: "posts/create",
+            element: <PostCreatePage />,
+          },
+          {
+            path: "posts/:postId/edit",
+            element: <PostEditPage />,
+          },
+
+          // Dịch vụ
+          {
+            path: "services",
+            element: <ServiceList />,
           },
         ],
       },

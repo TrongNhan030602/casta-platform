@@ -195,11 +195,16 @@ const UserList = () => {
         <div style={{ display: "flex", gap: "12px" }}>
           <Button
             variant={
-              filters.status === "inactive" ? "primary" : "danger-outline"
+              filters.status === "inactive" ? "danger" : "danger-outline"
             }
-            onClick={() =>
-              handleFilterChange({ ...filters, status: "inactive" })
-            }
+            onClick={() => {
+              // Nếu đang active thì bỏ lọc -> reset status
+              if (filters.status === "inactive") {
+                handleFilterChange({ ...filters, status: "" });
+              } else {
+                handleFilterChange({ ...filters, status: "inactive" });
+              }
+            }}
           >
             Tài khoản bị khóa ({lockedCount})
           </Button>

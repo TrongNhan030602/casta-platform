@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\MediaCleanupController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PostController;
@@ -27,7 +28,6 @@ use App\Http\Controllers\Api\ExhibitionSpaceProductController;
 use App\Http\Controllers\Api\ExhibitionSpaceCategoryController;
 use App\Http\Controllers\Api\Public\PublicExhibitionController;
 
-
 /** Truy cập ảnh từ Hostinger */
 Route::get('/storage/{path}', function ($path) {
     $filePath = storage_path("app/public/" . $path);
@@ -41,6 +41,12 @@ Route::get('/storage/{path}', function ($path) {
 
     return response($file, 200)->header('Content-Type', $mimeType);
 })->where('path', '.*');
+
+// Clean media
+Route::post('/media/cleanup', [MediaCleanupController::class, 'run'])->middleware('role:admin,cvcc');
+
+
+
 
 //======================================= PUBLIC =========================================
 Route::prefix('public')->group(function () {
@@ -582,7 +588,7 @@ Route::prefix('admin/products')->middleware(['auth:api'])->group(function () {
 });
 
 
-// ============================= Danh mục tin tức ===========================================
+// ============================= Danh mục tin tức - sự kiện ===========================================
 Route::prefix('news-categories')
     ->middleware(['auth:api']) // JWT guard
     ->group(function () {

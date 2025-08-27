@@ -1,0 +1,20 @@
+.c-rich-text-editor__toolbar button {
+  margin-right: 5px;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  background: #f8f9fa;
+  cursor: pointer;
+  border-radius: 0.25rem;
+}
+
+.c-rich-text-editor__toolbar button:hover {
+  background: #e2e6ea;
+}
+
+.c-rich-text-editor__content {
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  background: #fff;
+  outline: none;
+}

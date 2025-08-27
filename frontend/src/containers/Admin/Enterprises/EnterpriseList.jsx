@@ -233,13 +233,18 @@ const EnterpriseList = () => {
         <h2 className="page-title">Quản lý doanh nghiệp</h2>
         <div style={{ display: "flex", gap: 12 }}>
           <Button
-            variant={
-              filters.status === "pending" ? "primary" : "danger-outline"
-            }
-            onClick={() => handleFilterChange("status", "pending")}
+            variant={filters.status === "pending" ? "danger" : "danger-outline"}
+            onClick={() => {
+              if (filters.status === "pending") {
+                handleFilterChange("status", ""); // reset
+              } else {
+                handleFilterChange("status", "pending"); // bật lọc
+              }
+            }}
           >
             Hồ sơ chờ duyệt ({pendingCount})
           </Button>
+
           <Button
             variant="outline"
             onClick={handleExport}

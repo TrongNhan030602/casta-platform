@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
 use App\Enums\PostType;
 use App\Enums\PostStatus;
+use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {
@@ -43,6 +44,31 @@ class Post extends Model
         'is_sticky' => 'boolean',
         'published_at' => 'datetime',
     ];
+    protected static function booted()
+    {
+        static::deleted(function (Post $post) {
+            if ($post->isForceDeleting()) {
+                $mediaList = $post->media; // Lấy tất cả media liên kết
+
+                // Xóa pivot
+                $post->media()->detach();
+
+                foreach ($mediaList as $media) {
+                    // Kiểm tra media còn được dùng ở entity khác không
+                    $totalRelations = $media->posts()->count() + $media->services()->count();
+                    if ($totalRelations === 0) {
+                        // Xóa file vật lý
+                        if (Storage::disk($media->disk)->exists($media->path)) {
+                            Storage::disk($media->disk)->delete($media->path);
+                        }
+                        // Xóa record media
+                        $media->forceDelete();
+                    }
+                }
+            }
+        });
+    }
+
 
     // Relationships
     public function category()

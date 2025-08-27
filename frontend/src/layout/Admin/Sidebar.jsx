@@ -14,6 +14,8 @@ import {
   FaTags,
   FaBoxes,
   FaCheckSquare,
+  FaFileAlt,
+  FaConciergeBell,
 } from "react-icons/fa";
 import "@/assets/styles/layout/admin/admin-sidebar.css";
 
@@ -76,7 +78,16 @@ const menuItems = [
     label: "Sản phẩm",
     icon: <FaBoxes />,
   },
-
+  {
+    to: "/admin/posts",
+    label: "Bài viết tin tức - sự kiện",
+    icon: <FaFileAlt />,
+  },
+  {
+    to: "/admin/services",
+    label: "Dịch vụ",
+    icon: <FaConciergeBell />, // hoặc FaServicestack, FaHandsHelping...
+  },
   {
     to: "/admin/violations",
     label: "Cảnh báo",
