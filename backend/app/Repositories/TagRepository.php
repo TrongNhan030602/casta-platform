@@ -2,26 +2,50 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\TagInterface;
 use App\Models\Tag;
-use Illuminate\Database\Eloquent\Model;
+use App\Interfaces\TagInterface;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class TagRepository implements TagInterface
 {
-    public function list(bool $withTrashed = false, bool $onlyTrashed = false): iterable
-    {
-        $query = Tag::orderBy('name');
+    /**
+     * Lấy danh sách tags có filter, sort, soft delete
+     */
 
+    public function list(array $filters = [], bool $withTrashed = false, bool $onlyTrashed = false): LengthAwarePaginator
+    {
+        $query = Tag::query();
+
+        // Soft delete
         if ($onlyTrashed) {
             $query->onlyTrashed();
         } elseif ($withTrashed) {
             $query->withTrashed();
         }
 
-        return $query->get();
+        // Keyword search
+        if (!empty($filters['q'])) {
+            $q = $filters['q'];
+            $query->where(function ($sub) use ($q) {
+                $sub->where('name', 'like', "%{$q}%")
+                    ->orWhere('slug', 'like', "%{$q}%");
+            });
+        }
+
+        // Sort
+        $validSortBy = ['id', 'name', 'slug'];
+        $sortBy = in_array($filters['sort_by'] ?? '', $validSortBy) ? $filters['sort_by'] : 'id';
+        $sortOrder = strtolower($filters['sort_order'] ?? '') === 'desc' ? 'desc' : 'asc';
+        $query->orderBy($sortBy, $sortOrder);
+
+        $perPage = (int) ($filters['per_page'] ?? 15);
+
+        // ✅ Trả LengthAwarePaginator tuyệt đối
+        return $query->paginate($perPage);
     }
+
 
     public function find(int $id, bool $withTrashed = false): Tag
     {

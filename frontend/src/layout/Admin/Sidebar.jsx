@@ -28,7 +28,7 @@ const menuItems = [
   },
   {
     to: "/admin/users",
-    label: "Người dùng",
+    label: "Tài khoản",
     icon: <FaUsers />,
   },
 
@@ -86,7 +86,12 @@ const menuItems = [
   {
     to: "/admin/services",
     label: "Dịch vụ",
-    icon: <FaConciergeBell />, // hoặc FaServicestack, FaHandsHelping...
+    icon: <FaConciergeBell />,
+  },
+  {
+    to: "/admin/tags",
+    label: "Tag",
+    icon: <FaTags />,
   },
   {
     to: "/admin/violations",

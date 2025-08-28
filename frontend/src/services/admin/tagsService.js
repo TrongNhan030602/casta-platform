@@ -3,8 +3,11 @@ import axiosClient from "@/services/shared/axiosClient";
 // ============================= Tags ===========================================
 
 // 📌 1. Lấy danh sách tags (có filter nếu muốn)
-export const getTagList = (params = {}) => axiosClient.get("/tags", { params });
-
+export const getTagList = (params = {}) => {
+  // params có thể chứa:
+  // q, sort_by, sort_order, per_page, with_trashed, only_trashed
+  return axiosClient.get("/tags", { params });
+};
 // 📌 2. Tạo mới tag
 export const createTag = (data) => axiosClient.post("/tags", data);
 

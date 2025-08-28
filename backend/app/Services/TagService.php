@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Interfaces\TagInterface;
 use App\Models\Tag;
+use App\Interfaces\TagInterface;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class TagService
 {
@@ -19,14 +19,19 @@ class TagService
     /**
      * Lấy danh sách tag
      *
-     * @param bool $withTrashed  Lấy cả bản ghi đã xóa mềm
-     * @param bool $onlyTrashed  Chỉ lấy bản ghi đã xóa mềm
-     * @return Collection|Tag[]
+     * @param array $filters
+     * @param bool $withTrashed
+     * @param bool $onlyTrashed
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function list(bool $withTrashed = false, bool $onlyTrashed = false): iterable
+    public function list(array $filters = [], bool $withTrashed = false, bool $onlyTrashed = false): LengthAwarePaginator
     {
-        return $this->repo->list($withTrashed, $onlyTrashed);
+        /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator $paginator */
+        $paginator = $this->repo->list($filters, $withTrashed, $onlyTrashed);
+
+        return $paginator;
     }
+
 
     /**
      * Tìm tag theo ID

@@ -38,8 +38,16 @@ import ServiceCategoryEditPage from "@/containers/Admin/ServiceCategory/ServiceC
 import PostList from "@/containers/Admin/Post/PostList";
 import PostCreatePage from "@/containers/Admin/Post/PostCreatePage";
 import PostEditPage from "@/containers/Admin/Post/PostEditPage";
+import PostDetailPage from "@/containers/Admin/Post/PostDetailPage";
 
 import ServiceList from "@/containers/Admin/Services/ServiceList";
+import ServiceCreatePage from "@/containers/Admin/Services/ServiceCreatePage";
+import ServiceEditPage from "@/containers/Admin/Services/ServiceEditPage";
+import ServiceDetailPage from "@/containers/Admin/Services/ServiceDetailPage";
+
+import TagList from "@/containers/Admin/Tags/TagList";
+import TagCreatePage from "@/containers/Admin/Tags/TagCreatePage";
+import TagEditPage from "@/containers/Admin/Tags/TagEditPage";
 
 export const adminRoutes = [
   {
@@ -184,11 +192,41 @@ export const adminRoutes = [
             path: "posts/:postId/edit",
             element: <PostEditPage />,
           },
+          {
+            path: "posts/:id",
+            element: <PostDetailPage />,
+          },
 
           // Dịch vụ
           {
             path: "services",
             element: <ServiceList />,
+          },
+          {
+            path: "services/create",
+            element: <ServiceCreatePage />,
+          },
+          {
+            path: "services/:id/edit",
+            element: <ServiceEditPage />,
+          },
+          {
+            path: "services/:id",
+            element: <ServiceDetailPage />,
+          },
+
+          // Tags
+          {
+            path: "tags",
+            element: <TagList />,
+          },
+          {
+            path: "tags/create",
+            element: <TagCreatePage />,
+          },
+          {
+            path: "tags/:id/edit",
+            element: <TagEditPage />,
           },
         ],
       },

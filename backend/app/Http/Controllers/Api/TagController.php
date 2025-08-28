@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\BaseApiController;
 use App\Services\TagService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Requests\Tag\StoreTagRequest;
-use App\Http\Requests\Tag\UpdateTagRequest;
-use App\Http\Requests\Tag\AttachTagsRequest;
+use Illuminate\Http\JsonResponse;
 use App\Http\Resources\Tag\TagResource;
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Requests\Tag\StoreTagRequest;
+use App\Http\Controllers\BaseApiController;
+use App\Http\Requests\Tag\TagFilterRequest;
+use App\Http\Requests\Tag\UpdateTagRequest;
+use App\Http\Requests\Tag\AttachTagsRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class TagController extends BaseApiController
@@ -27,16 +28,21 @@ class TagController extends BaseApiController
     /**
      * Danh sách tags
      */
-    public function index(Request $request): JsonResponse
+    public function index(TagFilterRequest $request): JsonResponse
     {
         return $this->safe(function () use ($request) {
             $this->authorize('viewAny', \App\Models\Tag::class);
 
-            $withTrashed = (bool) $request->query('with_trashed', false);
-            $onlyTrashed = (bool) $request->query('only_trashed', false);
+            $filters = $request->filters();
+            $withTrashed = $filters['with_trashed'] ?? false;
+            $onlyTrashed = $filters['only_trashed'] ?? false;
 
-            $tags = $this->service->list($withTrashed, $onlyTrashed);
-            return response()->json(['data' => TagResource::collection($tags)]);
+            $paginator = $this->service->list($filters, $withTrashed, $onlyTrashed);
+
+            return response()->json([
+                'data' => TagResource::collection($paginator->items()),
+                'meta' => $this->meta($paginator),
+            ]);
         });
     }
 

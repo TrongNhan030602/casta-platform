@@ -48,14 +48,18 @@ const MediaSelector = ({
 
   return (
     <div className={classNames("c-media-selector mb-3", className)}>
-      {label && <label className="form-label">{label}</label>}
+      {label && (
+        <label className="form-label c-media-selector__label">{label}</label>
+      )}
 
       <input
         type="file"
         ref={inputRef}
         multiple={multiple}
         onChange={handleFileSelect}
-        className={classNames("form-control", { "is-invalid": !!error })}
+        className={classNames("form-control c-form-group__input", {
+          "is-invalid": !!error,
+        })}
       />
 
       {selectedItems.length > 0 && (

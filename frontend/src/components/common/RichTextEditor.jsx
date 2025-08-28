@@ -1,146 +1,230 @@
-// @/components/common/RichTextEditor.jsx
-import React, { useEffect, useRef, useState } from "react";
-import classNames from "classnames";
-import "@/assets/styles/common/rich-text-editor.css";
+import React, { useEffect, useRef } from "react";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import TextAlign from "@tiptap/extension-text-align";
+import { TextStyle } from "@tiptap/extension-text-style";
+import { Color } from "@tiptap/extension-color";
+import { Link } from "@tiptap/extension-link";
 
-const RichTextEditor = ({ id, label, value, onChange, error, className }) => {
-  const editorRef = useRef(null);
-  const [selection, setSelection] = useState(null);
-
-  // Cập nhật HTML khi value từ ngoài thay đổi
-  useEffect(() => {
-    if (editorRef.current && editorRef.current.innerHTML !== (value || "")) {
-      editorRef.current.innerHTML = value || "";
-    }
-  }, [value]);
-
-  // Lưu selection
-  const saveSelection = () => {
-    const sel = window.getSelection();
-    if (sel.rangeCount > 0) {
-      setSelection(sel.getRangeAt(0));
-    }
-  };
-
-  const restoreSelection = () => {
-    const sel = window.getSelection();
-    if (selection) {
-      sel.removeAllRanges();
-      sel.addRange(selection);
-    }
-  };
-
-  // Thực hiện command
-  const execCommand = (command, value = null) => {
-    restoreSelection();
-    document.execCommand(command, false, value);
-    onChange(editorRef.current.innerHTML);
-  };
-
-  // Paste sạch HTML
-  const handlePaste = (e) => {
-    e.preventDefault();
-    const text = e.clipboardData.getData("text/plain");
-    document.execCommand("insertText", false, text);
-  };
-
-  const handleInput = () => onChange(editorRef.current.innerHTML);
+const MenuBar = ({ editor }) => {
+  if (!editor) return null;
 
   return (
-    <div className={classNames("c-rich-text-editor mb-3", className)}>
-      {label && (
-        <label
-          htmlFor={id}
-          className="form-label"
-        >
-          {label}
-        </label>
-      )}
-
-      <div className="c-rich-text-editor__toolbar mb-1">
+    <div
+      className="btn-toolbar mb-2"
+      role="toolbar"
+    >
+      {/* Bold / Italic */}
+      <div
+        className="btn-group me-2"
+        role="group"
+      >
         <button
           type="button"
-          onMouseDown={(e) => e.preventDefault() || execCommand("bold")}
+          className={`btn btn-sm btn-outline-secondary ${
+            editor.isActive("bold") ? "active" : ""
+          }`}
+          onClick={() => editor.chain().focus().toggleBold().run()}
         >
           <b>B</b>
         </button>
         <button
           type="button"
-          onMouseDown={(e) => e.preventDefault() || execCommand("italic")}
+          className={`btn btn-sm btn-outline-secondary ${
+            editor.isActive("italic") ? "active" : ""
+          }`}
+          onClick={() => editor.chain().focus().toggleItalic().run()}
         >
           <i>I</i>
         </button>
+      </div>
+
+      {/* Heading */}
+      <div
+        className="btn-group me-2"
+        role="group"
+      >
         <button
           type="button"
-          onMouseDown={(e) => e.preventDefault() || execCommand("underline")}
-        >
-          <u>U</u>
-        </button>
-        <button
-          type="button"
-          onMouseDown={(e) =>
-            e.preventDefault() || execCommand("insertOrderedList")
+          className={`btn btn-sm btn-outline-secondary ${
+            editor.isActive("heading", { level: 1 }) ? "active" : ""
+          }`}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 1 }).run()
           }
         >
-          OL
+          H1
         </button>
         <button
           type="button"
-          onMouseDown={(e) =>
-            e.preventDefault() || execCommand("insertUnorderedList")
+          className={`btn btn-sm btn-outline-secondary ${
+            editor.isActive("heading", { level: 2 }) ? "active" : ""
+          }`}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
           }
         >
-          UL
-        </button>
-        <button
-          type="button"
-          onMouseDown={(e) => {
-            e.preventDefault();
-            const url = prompt("Nhập link:");
-            if (url) execCommand("createLink", url);
-          }}
-        >
-          🔗
-        </button>
-        <button
-          type="button"
-          onMouseDown={(e) => e.preventDefault() || execCommand("undo")}
-        >
-          ↶
-        </button>
-        <button
-          type="button"
-          onMouseDown={(e) => e.preventDefault() || execCommand("redo")}
-        >
-          ↷
-        </button>
-        <button
-          type="button"
-          onMouseDown={(e) => {
-            e.preventDefault();
-            const color = prompt("Nhập màu highlight (ví dụ: yellow, #ff0):");
-            if (color) execCommand("backColor", color);
-          }}
-        >
-          🖌️
+          H2
         </button>
       </div>
 
+      {/* Alignment */}
       <div
-        id={id}
-        ref={editorRef}
-        contentEditable
-        className={classNames("form-control c-rich-text-editor__content", {
-          "is-invalid": !!error,
-        })}
-        onInput={handleInput}
-        onKeyUp={saveSelection}
-        onMouseUp={saveSelection}
-        onPaste={handlePaste}
-        style={{ minHeight: "250px", overflowY: "auto" }}
-      />
+        className="btn-group me-2"
+        role="group"
+      >
+        <button
+          type="button"
+          className={`btn btn-sm btn-outline-secondary ${
+            editor.isActive({ textAlign: "left" }) ? "active" : ""
+          }`}
+          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+        >
+          ⬅
+        </button>
+        <button
+          type="button"
+          className={`btn btn-sm btn-outline-secondary ${
+            editor.isActive({ textAlign: "center" }) ? "active" : ""
+          }`}
+          onClick={() => editor.chain().focus().setTextAlign("center").run()}
+        >
+          ⬍
+        </button>
+        <button
+          type="button"
+          className={`btn btn-sm btn-outline-secondary ${
+            editor.isActive({ textAlign: "right" }) ? "active" : ""
+          }`}
+          onClick={() => editor.chain().focus().setTextAlign("right").run()}
+        >
+          ➡
+        </button>
+      </div>
 
-      {error && <div className="invalid-feedback d-block">{error}</div>}
+      {/* Color */}
+      <div
+        className="btn-group me-2"
+        role="group"
+      >
+        <input
+          type="color"
+          className="form-control form-control-color"
+          title="Chọn màu chữ"
+          onInput={(e) => editor.chain().focus().setColor(e.target.value).run()}
+        />
+        <button
+          type="button"
+          className="btn btn-sm btn-outline-secondary"
+          onClick={() => editor.chain().focus().unsetColor().run()}
+        >
+          Reset
+        </button>
+      </div>
+
+      {/* Link */}
+      <div
+        className="btn-group me-2"
+        role="group"
+      >
+        <button
+          type="button"
+          className={`btn btn-sm btn-outline-secondary ${
+            editor.isActive("link") ? "active" : ""
+          }`}
+          onClick={() => {
+            const url = prompt("Nhập link:");
+            if (url) editor.chain().focus().setLink({ href: url }).run();
+          }}
+        >
+          🔗 Link
+        </button>
+        <button
+          type="button"
+          className="btn btn-sm btn-outline-secondary"
+          onClick={() => editor.chain().focus().unsetLink().run()}
+        >
+          ❌ Unlink
+        </button>
+      </div>
+
+      {/* Undo / Redo */}
+      <div
+        className="btn-group"
+        role="group"
+      >
+        <button
+          type="button"
+          className="btn btn-sm btn-outline-secondary"
+          onClick={() => editor.chain().focus().undo().run()}
+        >
+          ⎌ Undo
+        </button>
+        <button
+          type="button"
+          className="btn btn-sm btn-outline-secondary"
+          onClick={() => editor.chain().focus().redo().run()}
+        >
+          ↻ Redo
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const RichTextEditor = ({ id, label, value, onChange }) => {
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      TextStyle,
+      Color,
+      Link,
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
+    ],
+    content: value || "",
+    onUpdate: ({ editor }) => onChange(editor.getHTML()),
+  });
+
+  const editorWrapper = useRef(null);
+
+  // Auto focus khi mount nếu trống
+  useEffect(() => {
+    if (editor && !value) {
+      editor.chain().focus().run();
+    }
+  }, [editor, value]);
+
+  // Sync content từ prop
+  useEffect(() => {
+    if (editor && value !== editor.getHTML()) {
+      editor.commands.setContent(value || "");
+    }
+  }, [value, editor]);
+
+  return (
+    <div className="mb-3">
+      {label && (
+        <label
+          htmlFor={id}
+          className="form-label fw-bold"
+        >
+          {label}
+        </label>
+      )}
+      <MenuBar editor={editor} />
+      <div
+        ref={editorWrapper}
+        className="border rounded p-2 bg-white"
+        style={{
+          minHeight: "300px",
+          maxHeight: "600px",
+          overflowY: "auto",
+          cursor: "text",
+        }}
+        onClick={() => editor && editor.chain().focus().run()} // click vào focus editor
+      >
+        <EditorContent editor={editor} />
+      </div>
     </div>
   );
 };

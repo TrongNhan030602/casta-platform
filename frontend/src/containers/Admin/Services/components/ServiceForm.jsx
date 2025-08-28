@@ -1,46 +1,38 @@
-// @/components/admin/posts/PostForm.jsx
 import React, { useEffect, useState } from "react";
 import FormGroup from "@/components/common/FormGroup";
-import SwitchToggle from "@/components/common/SwitchToggle";
 import SelectBox from "@/components/common/SelectBox";
 import Button from "@/components/common/Button";
-import TextArea from "@/components/common/TextArea";
-import DatePicker from "@/components/common/DatePicker";
+import TextArea from "@/components/common/TextArea"; // import TextArea
 import TagSelectBox from "@/components/common/TagSelectBox";
 import RichTextEditor from "@/components/common/RichTextEditor";
 import MediaSelector from "@/components/common/MediaSelector";
-import { useNewsCategoryTree } from "@/hooks/useNewsCategoryTree";
+import { useServiceCategoryTree } from "@/hooks/useServiceCategoryTree";
 import { getTagList } from "@/services/admin/tagsService";
-import { POST_TYPE_OPTIONS } from "@/constants/postType";
 import { POST_STATUS_OPTIONS } from "@/constants/postStatus";
 
-const PostForm = ({
+const ServiceForm = ({
   defaultValues = {},
   isEdit = false,
   onSubmit,
   loading = false,
 }) => {
-  const { data: categoryOptions = [] } = useNewsCategoryTree(true);
+  const { data: categoryOptions = [] } = useServiceCategoryTree(true);
   const [tagOptions, setTagOptions] = useState([]);
   const [formData, setFormData] = useState({
-    type: defaultValues.type || "news",
-    title: defaultValues.title || "",
+    name: defaultValues.name || "",
     slug: defaultValues.slug || "",
     category_id: defaultValues.category_id ?? null,
     summary: defaultValues.summary || "",
     content: defaultValues.content || "",
+    price: defaultValues.price || 0,
+    currency: defaultValues.currency || "VND",
+    duration_minutes: defaultValues.duration_minutes || 0,
+    features: defaultValues.features || [],
     media: defaultValues.media || [],
     tags: (defaultValues.tags || []).map((t) => {
       if (t?.value && t?.label) return { value: t.value, label: t.label };
       return { value: t.id, label: t.name };
     }),
-    is_sticky: !!defaultValues.is_sticky,
-    published_at: defaultValues.published_at || "",
-    event_location: defaultValues.event_location || "",
-    event_start: defaultValues.event_start || "",
-    event_end: defaultValues.event_end || "",
-    meta_title: defaultValues.meta_title || "",
-    meta_description: defaultValues.meta_description || "",
     status: defaultValues.status || "draft",
   });
   const [isSlugEdited, setIsSlugEdited] = useState(false);
@@ -50,8 +42,7 @@ const PostForm = ({
       try {
         const res = await getTagList({ per_page: 100 });
         setTagOptions(
-          res.data?.data.map((tag) => ({ value: tag.id, label: tag.name })) ||
-            []
+          res.data?.data.map((t) => ({ value: t.id, label: t.name })) || []
         );
       } catch (err) {
         console.error("Cannot load tags:", err);
@@ -68,8 +59,8 @@ const PostForm = ({
       .replace(/Đ/g, "D");
 
   useEffect(() => {
-    if (!isSlugEdited && formData.title) {
-      const slugified = removeVietnameseTones(formData.title)
+    if (!isSlugEdited && formData.name) {
+      const slugified = removeVietnameseTones(formData.name)
         .toLowerCase()
         .replace(/\s+/g, "-")
         .replace(/[^a-z0-9-]/g, "")
@@ -77,7 +68,7 @@ const PostForm = ({
         .replace(/^-+|-+$/g, "");
       setFormData((prev) => ({ ...prev, slug: slugified }));
     }
-  }, [formData.title, isSlugEdited]);
+  }, [formData.name, isSlugEdited]);
 
   const handleChange = (e) => {
     const { id, value, type, checked } = e.target;
@@ -90,24 +81,22 @@ const PostForm = ({
 
   const handleSubmitForm = (e) => {
     e.preventDefault();
-    // gửi media (tách id/file) cho PostEditPage
-    onSubmit(formData, { setIsSlugEdited });
+    const cleanedData = {
+      ...formData,
+      features: formData.features
+        .map((f) => String(f || "").trim())
+        .filter(Boolean),
+    };
+    onSubmit(cleanedData, { setIsSlugEdited });
   };
 
   return (
     <form onSubmit={handleSubmitForm}>
-      <SelectBox
-        id="type"
-        label="Loại bài viết"
-        value={formData.type}
-        onChange={(v) => setFormData((prev) => ({ ...prev, type: v }))}
-        options={POST_TYPE_OPTIONS}
-      />
-
+      {/* Name & Slug */}
       <FormGroup
-        id="title"
-        label="Tiêu đề"
-        value={formData.title}
+        id="name"
+        label="Tên dịch vụ"
+        value={formData.name}
         onChange={handleChange}
       />
       <FormGroup
@@ -117,6 +106,7 @@ const PostForm = ({
         onChange={handleChange}
       />
 
+      {/* Category */}
       <SelectBox
         id="category_id"
         label="Danh mục"
@@ -133,6 +123,7 @@ const PostForm = ({
         ]}
       />
 
+      {/* Summary: dùng TextArea */}
       <TextArea
         label="Tóm tắt"
         id="summary"
@@ -140,6 +131,8 @@ const PostForm = ({
         onChange={handleChange}
         rows={3}
       />
+
+      {/* Content */}
       <RichTextEditor
         id="content"
         label="Nội dung"
@@ -147,6 +140,86 @@ const PostForm = ({
         onChange={(v) => setFormData((prev) => ({ ...prev, content: v }))}
       />
 
+      {/* Price & Currency */}
+      <FormGroup
+        id="price"
+        label="Giá dịch vụ"
+        type="number"
+        value={formData.price}
+        onChange={handleChange}
+      />
+      <SelectBox
+        id="currency"
+        label="Đơn vị tiền tệ"
+        value={formData.currency}
+        onChange={(v) => setFormData((prev) => ({ ...prev, currency: v }))}
+        options={[
+          { value: "VND", label: "VND" },
+          { value: "USD", label: "USD" },
+        ]}
+      />
+
+      <FormGroup
+        id="duration_minutes"
+        label="Thời gian (phút)"
+        type="number"
+        value={formData.duration_minutes}
+        onChange={handleChange}
+      />
+
+      {/* Features, Media, Tags, Status */}
+      <div>
+        <label>Đặc điểm nổi bật</label>
+        {formData.features.map((f, idx) => (
+          <div
+            key={idx}
+            style={{ display: "flex", gap: 8, marginBottom: 8 }}
+          >
+            <input
+              type="text"
+              value={f}
+              onChange={(e) => {
+                const features = [...formData.features];
+                features[idx] = e.target.value;
+                setFormData((prev) => ({ ...prev, features }));
+              }}
+              style={{ flex: 1 }}
+            />
+            <Button
+              variant="danger"
+              onClick={() => {
+                setFormData((prev) => ({
+                  ...prev,
+                  features: prev.features.filter((_, i) => i !== idx),
+                }));
+              }}
+              type="button"
+            >
+              Xóa
+            </Button>
+          </div>
+        ))}
+        <Button
+          size="sm"
+          className="m-2"
+          onClick={() =>
+            setFormData((prev) => ({
+              ...prev,
+              features: [...prev.features, ""],
+            }))
+          }
+          type="button"
+        >
+          + Thêm đặc điểm
+        </Button>
+      </div>
+
+      <MediaSelector
+        label="Ảnh/Media"
+        selectedItems={formData.media}
+        onChange={(items) => setFormData((prev) => ({ ...prev, media: items }))}
+        multiple
+      />
       <TagSelectBox
         id="tags"
         label="Tags"
@@ -159,74 +232,12 @@ const PostForm = ({
           }))
         }
       />
-
-      <MediaSelector
-        label="Ảnh/Media"
-        selectedItems={formData.media}
-        onChange={(items) => setFormData((prev) => ({ ...prev, media: items }))}
-        multiple
-      />
-
       <SelectBox
         id="status"
         label="Trạng thái"
         value={formData.status}
         onChange={(v) => setFormData((prev) => ({ ...prev, status: v }))}
         options={POST_STATUS_OPTIONS}
-      />
-
-      <DatePicker
-        id="published_at"
-        label="Ngày xuất bản"
-        value={formData.published_at}
-        onChange={(v) => setFormData((prev) => ({ ...prev, published_at: v }))}
-      />
-
-      <SwitchToggle
-        id="is_sticky"
-        label="Bài viết nổi bật"
-        checked={formData.is_sticky}
-        onChange={handleChange}
-      />
-      {formData.type === "event" && (
-        <>
-          <FormGroup
-            id="event_location"
-            label="Địa điểm sự kiện"
-            value={formData.event_location}
-            onChange={handleChange}
-          />
-          <DatePicker
-            id="event_start"
-            label="Bắt đầu sự kiện"
-            mode="datetime"
-            value={formData.event_start}
-            onChange={(v) =>
-              setFormData((prev) => ({ ...prev, event_start: v }))
-            }
-          />
-          <DatePicker
-            id="event_end"
-            mode="datetime"
-            label="Kết thúc sự kiện"
-            value={formData.event_end}
-            onChange={(v) => setFormData((prev) => ({ ...prev, event_end: v }))}
-          />
-        </>
-      )}
-
-      <FormGroup
-        id="meta_title"
-        label="Meta title"
-        value={formData.meta_title}
-        onChange={handleChange}
-      />
-      <FormGroup
-        id="meta_description"
-        label="Meta description"
-        as="textarea"
-        value={formData.meta_description}
-        onChange={handleChange}
       />
 
       <div style={{ marginTop: 20 }}>
@@ -241,4 +252,4 @@ const PostForm = ({
   );
 };
 
-export default PostForm;
+export default ServiceForm;

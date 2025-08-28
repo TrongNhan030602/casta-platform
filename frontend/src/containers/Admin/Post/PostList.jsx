@@ -55,7 +55,7 @@ const PostList = () => {
     const handler = setTimeout(() => {
       setDebouncedKeyword(keyword.trim().length >= 3 ? keyword.trim() : "");
       setPage(1);
-    }, 700);
+    }, 300);
     return () => clearTimeout(handler);
   }, [keyword]);
 

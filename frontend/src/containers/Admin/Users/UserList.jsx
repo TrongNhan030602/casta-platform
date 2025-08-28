@@ -191,7 +191,7 @@ const UserList = () => {
   return (
     <div className="user-list-page">
       <div className="user-list-header">
-        <h2 className="page-title">Quản lý người dùng</h2>
+        <h2 className="page-title">Quản lý tài khoản</h2>
         <div style={{ display: "flex", gap: "12px" }}>
           <Button
             variant={

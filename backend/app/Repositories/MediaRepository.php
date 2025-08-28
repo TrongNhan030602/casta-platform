@@ -202,7 +202,7 @@ class MediaRepository implements MediaInterface
         if (!empty($existingMediaIds)) {
             DB::transaction(function () use ($model, $existingMediaIds, $role) {
                 $pivotData = $role ? array_fill_keys($existingMediaIds, ['role' => $role]) : [];
-                $model->media()->syncWithoutDetaching($pivotData);
+                $model->media()->sync($pivotData);
             });
         }
     }

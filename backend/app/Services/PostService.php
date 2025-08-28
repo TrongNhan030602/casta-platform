@@ -29,6 +29,7 @@ class PostService
     public function store(array $data): Post
     {
         $userId = Auth::id();
+        $data['author_id'] = $userId;
         $data['created_by'] = $userId;
         $data['updated_by'] = $userId;
 

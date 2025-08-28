@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import PostForm from "./components/PostForm";
 import Button from "@/components/common/Button";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { getPostById, updatePost } from "@/services/admin/postsService";
 import { uploadMedia, attachMedia } from "@/services/admin/mediaService";
 import { getStorageUrl } from "@/utils/getStorageUrl";
@@ -37,10 +38,11 @@ const PostEditPage = () => {
     try {
       setLoading(true);
 
-      // 1️⃣ Tách gallery thành media cũ và file mới
+      // 1️⃣ Tách media cũ và file mới từ MediaSelector
       const existingIds = [];
       const newFiles = [];
-      (formData.gallery || []).forEach((item) => {
+      (formData.media || []).forEach((item) => {
+        if (!item) return;
         if (item.id) existingIds.push(Number(item.id));
         else if (item.file) newFiles.push(item.file);
       });
@@ -49,15 +51,17 @@ const PostEditPage = () => {
       const uploadedIds = (
         await Promise.all(
           newFiles.map(async (file) => {
+            if (!file) return null;
             const res = await uploadMedia(file);
-            return res?.data?.data?.id;
+            return res?.data?.data?.id || null;
           })
         )
       ).filter(Boolean);
 
-      const allGalleryIds = [...existingIds, ...uploadedIds];
+      // 3️⃣ Merge tất cả media muốn giữ
+      const allMediaIds = [...existingIds, ...uploadedIds].filter(Boolean);
 
-      // 3️⃣ Chuẩn payload update post
+      // 4️⃣ Chuẩn payload update post (không cần gallery)
       const payload = {
         type: formData.type,
         title: formData.title,
@@ -65,14 +69,12 @@ const PostEditPage = () => {
         category_id: formData.category_id ? Number(formData.category_id) : null,
         summary: formData.summary || null,
         content: formData.content || null,
-        gallery: allGalleryIds.length ? allGalleryIds : null,
         tags: (formData.tags || [])
           .map((t) => Number(t?.id ?? t?.value ?? t))
           .filter(Boolean),
         status: formData.status,
         is_sticky: formData.is_sticky ? 1 : 0,
         published_at: formatDateTime(formData.published_at),
-        author_id: formData.author_id ? Number(formData.author_id) : null,
         event_location: formData.event_location || null,
         event_start: formatDateTime(formData.event_start),
         event_end: formatDateTime(formData.event_end),
@@ -80,16 +82,16 @@ const PostEditPage = () => {
         meta_description: formData.meta_description || null,
       };
 
-      // 4️⃣ Cập nhật bài viết
+      // 5️⃣ Cập nhật bài viết
       const res = await updatePost(postId, payload);
       if (!res?.data?.data?.id) throw new Error("Không lấy được ID post");
 
-      // 5️⃣ Attach media mới (nếu có)
-      if (uploadedIds.length) {
+      // 6️⃣ Sync media với BE (BE dùng sync())
+      if (allMediaIds.length > 0) {
         await attachMedia({
           type: "post",
           id: postId,
-          media_ids: uploadedIds,
+          media_ids: allMediaIds,
           role: "gallery",
         });
       }
@@ -115,8 +117,9 @@ const PostEditPage = () => {
     }
   };
 
-  if (isFetching) return <p>Đang tải dữ liệu bài viết...</p>;
-  if (!postDetail) return <p>Bài viết không tồn tại</p>;
+  if (isFetching) return <LoadingSpinner text="Đang tải dữ liệu" />;
+  if (!postDetail)
+    return <p className="text-center text-muted">Bài viết không tồn tại</p>;
 
   // Map media để hiển thị đúng trong MediaSelector
   const mediaItems =
@@ -133,7 +136,7 @@ const PostEditPage = () => {
         <Button
           type="button"
           variant="outline"
-          onClick={() => navigate("/admin/posts")}
+          onClick={() => navigate(-1)}
           disabled={loading}
         >
           ← Quay lại
@@ -149,13 +152,12 @@ const PostEditPage = () => {
           category_id: postDetail.category?.id ?? "",
           summary: postDetail.summary || "",
           content: postDetail.content || "",
-          gallery: mediaItems, // <-- media cũ dùng path
+          media: mediaItems, // <-- media thay cho gallery
           tags: (postDetail.tags || []).map((t) => ({
             id: t.id,
             value: t.id,
             label: t.name,
           })),
-
           is_sticky: postDetail.is_sticky || false,
           published_at: postDetail.published_at || "",
           event_location: postDetail.event_location || "",

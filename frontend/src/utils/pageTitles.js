@@ -4,7 +4,7 @@ export const pageTitles = {
   "/admin": "Dashboard",
   "/admin/account": "Tài khoản",
   "/admin/change-password": "Đổi mật khẩu",
-  "/admin/users": "Quản lý người dùng",
+  "/admin/users": "Quản lý tài khoản",
   "/admin/violations": "Quản lý cảnh báo",
   "/admin/feedbacks": "Quản lý phản hồi",
   "/admin/enterprises": "Quản lý doanh nghiệp",
@@ -20,4 +20,5 @@ export const pageTitles = {
   "/admin/posts": "Bài viết Tin tức - Sự kiện",
   "/admin/services-categories": "Danh mục Dịch vụ",
   "/admin/services": "Dịch vụ",
+  "/admin/tags": "Quản lý Tag (tin tức, dịch vụ, sự kiện)",
 };

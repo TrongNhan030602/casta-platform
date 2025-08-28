@@ -33,6 +33,7 @@ class ServiceResource extends JsonResource
                     'id' => $media->id,
                     'url' => $media->url,
                     'disk' => $media->disk,
+                    'path' => $media->path,
                     'meta' => $media->meta,
                 ]);
             }),

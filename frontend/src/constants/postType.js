@@ -2,7 +2,7 @@ export const POST_TYPES = {
   news: {
     value: "news",
     label: "Tin tức",
-    color: "info",
+    color: "success",
   },
   event: {
     value: "event",

@@ -43,6 +43,8 @@ class Post extends Model
         'gallery' => 'array',
         'is_sticky' => 'boolean',
         'published_at' => 'datetime',
+        'event_start' => 'datetime',
+        'event_end' => 'datetime',
     ];
     protected static function booted()
     {

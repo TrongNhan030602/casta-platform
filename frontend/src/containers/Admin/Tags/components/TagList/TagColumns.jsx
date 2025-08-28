@@ -1,18 +1,19 @@
 import React from "react";
 import { FaHashtag } from "react-icons/fa";
 import Button from "@/components/common/Button";
-import { POST_TYPES } from "@/constants/postType";
-import { POST_STATUSES } from "@/constants/postStatus";
-import { formatDateOnly } from "@/utils/formatDateOnly";
 
-const PostColumns = (navigate, handleActionClick) => [
+const TAG_STATUSES = {
+  active: { label: "Đang hoạt động", color: "success" },
+  deleted: { label: "Đã xóa", color: "danger" },
+};
+
+const TagColumns = (navigate, handleActionClick) => [
   {
     label: "ID",
     key: "id",
     render: (row) => (
       <button
-        type="button"
-        onClick={() => navigate(`/admin/posts/${row.id}`)}
+        onClick={() => navigate(`/admin/tags/${row.id}/edit`)}
         className="link-button"
         title={`#${row.id}`}
       >
@@ -21,42 +22,25 @@ const PostColumns = (navigate, handleActionClick) => [
     ),
   },
   {
-    label: "Tiêu đề",
-    key: "title",
-    render: (row) => <span className="link">{row.title}</span>,
+    label: "Tên tag",
+    key: "name",
+    render: (row) => <span className="link">{row.name}</span>,
   },
   {
-    label: "Loại",
-    render: (row) => {
-      const type = Object.values(POST_TYPES).find(
-        (t) => t.value === row.type
-      ) || { label: row.type, color: "dark" };
-      return <span className={`badge badge--${type.color}`}>{type.label}</span>;
-    },
+    label: "Slug",
+    key: "slug",
+    render: (row) => <span>{row.slug}</span>,
   },
   {
     label: "Trạng thái",
     render: (row) => {
-      // map theo value, đảm bảo mỗi trạng thái có màu riêng
-      const status = Object.values(POST_STATUSES).find(
-        (s) => s.value === row.status
-      ) || {
-        label: row.status,
-        color: "secondary",
-      };
+      const status = row.deleted_at
+        ? TAG_STATUSES.deleted
+        : TAG_STATUSES.active;
       return (
         <span className={`badge badge--${status.color}`}>{status.label}</span>
       );
     },
-  },
-  {
-    label: "Tác giả",
-    render: (row) => <span>{row.author?.name || "—"}</span>,
-  },
-  {
-    key: "published_at",
-    label: "Ngày xuất bản",
-    render: (row) => <span>{formatDateOnly(row.published_at) || "—"}</span>,
   },
   {
     label: "Hành động",
@@ -67,7 +51,7 @@ const PostColumns = (navigate, handleActionClick) => [
             <Button
               size="sm"
               variant="outline"
-              onClick={() => navigate(`/admin/posts/${row.id}/edit`)}
+              onClick={() => navigate(`/admin/tags/${row.id}/edit`)}
             >
               Sửa
             </Button>
@@ -76,7 +60,7 @@ const PostColumns = (navigate, handleActionClick) => [
               variant="danger-outline"
               onClick={() => handleActionClick(row, "delete")}
             >
-              Xoá
+              Xóa
             </Button>
           </>
         )}
@@ -103,4 +87,4 @@ const PostColumns = (navigate, handleActionClick) => [
   },
 ];
 
-export default PostColumns;
+export default TagColumns;

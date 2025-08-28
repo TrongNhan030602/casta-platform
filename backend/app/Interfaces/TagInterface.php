@@ -5,6 +5,7 @@ namespace App\Interfaces;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface TagInterface
 {
@@ -15,7 +16,8 @@ interface TagInterface
      * @param bool $onlyTrashed  Chỉ lấy bản ghi đã xóa mềm
      * @return Collection|Tag[]
      */
-    public function list(bool $withTrashed = false, bool $onlyTrashed = false): iterable;
+    public function list(array $filters = [], bool $withTrashed = false, bool $onlyTrashed = false): LengthAwarePaginator;
+
 
     /**
      * Tìm tag theo ID
