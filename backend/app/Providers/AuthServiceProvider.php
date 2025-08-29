@@ -8,6 +8,7 @@ use App\Models\Tag;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Media;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Service;
 use App\Models\Category;
@@ -17,22 +18,23 @@ use App\Models\LoginLog;
 use App\Models\Violation;
 use App\Models\Enterprise;
 use App\Models\NewsCategory;
-use App\Models\RentalContract;
-use App\Models\ExhibitionSpaceProduct;
-use App\Models\ExhibitionMedia;
 use App\Models\ExhibitionSpaceCategory;
+use App\Models\ExhibitionMedia;
 use App\Models\ExhibitionSpace;
+use App\Models\ExhibitionSpaceProduct;
 use App\Models\ServiceCategory;
+use App\Models\RentalContract;
 
 // Policies
 use App\Policies\PostPolicy;
 use App\Policies\UserPolicy;
 use App\Policies\MediaPolicy;
+use App\Policies\OrderPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ServicePolicy;
-use App\Policies\TagPolicy;
 use App\Policies\CategoryPolicy;
 use App\Policies\CustomerPolicy;
+use App\Policies\TagPolicy;
 use App\Policies\FeedbackPolicy;
 use App\Policies\LoginLogPolicy;
 use App\Policies\ViolationPolicy;
@@ -68,6 +70,7 @@ class AuthServiceProvider extends ServiceProvider
         Service::class => ServicePolicy::class,
         Tag::class => TagPolicy::class,
         Media::class => MediaPolicy::class,
+        Order::class => OrderPolicy::class,
 
     ];
 

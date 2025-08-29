@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use App\Interfaces\OrderInterface;
 use App\Interfaces\TagInterface;
 use App\Interfaces\AuthInterface;
 use App\Interfaces\PostInterface;
 use App\Interfaces\UserInterface;
 use App\Interfaces\MediaInterface;
+use App\Repositories\OrderRepository;
 use App\Repositories\TagRepository;
 use App\Interfaces\ProductInterface;
 use App\Interfaces\ServiceInterface;
@@ -78,6 +80,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ServiceInterface::class, ServiceRepository::class);
         $this->app->bind(TagInterface::class, TagRepository::class);
         $this->app->bind(MediaInterface::class, MediaRepository::class);
+        $this->app->bind(OrderInterface::class, OrderRepository::class);
 
 
 

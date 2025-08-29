@@ -14,10 +14,11 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->foreignId('parent_id')->nullable()->constrained('categories')->nullOnDelete(); // danh mục cha (nếu có)
+            $table->foreignId('parent_id')->nullable()->constrained('categories')->nullOnDelete();
+            $table->boolean('is_active')->default(true);
+            $table->integer('sort_order')->default(0);
             $table->timestamps();
         });
-
     }
 
     /**

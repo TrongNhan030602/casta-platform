@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\OrderStatus;
 
 class OrderHistory extends Model
 {
@@ -16,6 +17,12 @@ class OrderHistory extends Model
         'status',
         'note',
         'changed_by',
+    ];
+
+    protected $casts = [
+        'status' => OrderStatus::class,
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     // Relationships

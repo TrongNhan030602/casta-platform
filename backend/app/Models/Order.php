@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Enums\OrderStatus;
+use App\Enums\PaymentMethod;
+use App\Enums\PaymentStatus;
 
 class Order extends Model
 {
@@ -23,6 +26,18 @@ class Order extends Model
         'shipping_address',
         'shipping_phone',
         'note',
+    ];
+
+    protected $casts = [
+        'status' => OrderStatus::class,
+        'payment_method' => PaymentMethod::class,
+        'payment_status' => PaymentStatus::class,
+        'total_price' => 'decimal:2',
+        'discount' => 'decimal:2',
+        'final_price' => 'decimal:2',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     // Relationships
