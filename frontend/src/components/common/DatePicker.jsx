@@ -33,8 +33,10 @@ const DatePicker = ({
 
   // callback onChange chuẩn hóa value về ISO string
   const handleChange = (e) => {
+    if (!e || !e.target) return onChange("");
     const val = e.target.value;
     if (!val) return onChange("");
+
     if (mode === "date") {
       onChange(val); // YYYY-MM-DD
     } else if (mode === "datetime") {

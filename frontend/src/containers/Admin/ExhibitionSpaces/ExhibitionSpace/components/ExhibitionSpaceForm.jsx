@@ -103,8 +103,8 @@ const ExhibitionSpaceForm = ({
       <SelectBox
         id="category_id"
         label="Danh mục không gian"
-        value={categoryId}
-        onChange={(value) => setValue("category_id", value)}
+        value={String(categoryId || "")} // ép kiểu string
+        onChange={(value) => setValue("category_id", String(value))}
         options={[{ value: "", label: "Chọn danh mục" }, ...categoryOptions]}
         error={errors.category_id?.message}
       />

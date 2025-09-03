@@ -72,6 +72,9 @@ class Product extends Model
         'average_rating' => 'decimal:1',
         'tags' => 'array',
     ];
+
+    // luôn eager load images để tránh N+1 query
+    protected $with = ['images'];
     protected static function boot()
     {
         parent::boot();
@@ -82,6 +85,7 @@ class Product extends Model
             }
         });
     }
+    // -------------------- ACCESSORS --------------------
     public function getTagEnumsAttribute(): array
     {
         return collect($this->tags)
@@ -90,7 +94,12 @@ class Product extends Model
             ->values() // Reset index
             ->all(); // Trả về mảng thường
     }
-
+    public function getMainImageAttribute(): ?string
+    {
+        return $this->images
+            ->firstWhere('is_main', true)?->url
+            ?? $this->images->first()?->url;
+    }
     // -------------------- RELATIONS --------------------
     public function images(): HasMany
     {

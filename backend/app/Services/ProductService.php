@@ -156,7 +156,7 @@ class ProductService
 
     public function findOrFail(int $id): Product
     {
-        return Product::withTrashed()->findOrFail($id); // ✅ tìm cả bản ghi đã xoá mềm
+        return Product::withTrashed()->with('images')->findOrFail($id); // ✅ tìm cả bản ghi đã xoá mềm
     }
 
 

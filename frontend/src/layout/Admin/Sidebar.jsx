@@ -19,6 +19,7 @@ import {
 } from "react-icons/fa";
 import "@/assets/styles/layout/admin/admin-sidebar.css";
 
+// Danh sách menu gốc
 const menuItems = [
   {
     to: "/admin",
@@ -31,7 +32,6 @@ const menuItems = [
     label: "Tài khoản",
     icon: <FaUsers />,
   },
-
   {
     to: "/admin/enterprises",
     label: "Doanh nghiệp",
@@ -39,27 +39,27 @@ const menuItems = [
   },
   {
     to: "/admin/exhibition-space-categories",
-    label: "Danh mục không gian",
+    label: "DM không gian",
     icon: <FaThList />,
   },
   {
     to: "/admin/product-categories",
-    label: "Danh mục sản phẩm",
+    label: "DM sản phẩm",
     icon: <FaThList />,
   },
   {
     to: "/admin/news-categories",
-    label: "Danh mục tin tức - sự kiện",
+    label: "DM tin tức - sự kiện",
     icon: <FaThList />,
   },
   {
     to: "/admin/services-categories",
-    label: "Danh mục dịch vụ",
+    label: "DM dịch vụ",
     icon: <FaThList />,
   },
   {
     to: "/admin/exhibition-spaces",
-    label: "Không gian trưng bày",
+    label: "Không gian",
     icon: <FaBox />,
   },
   {
@@ -72,7 +72,6 @@ const menuItems = [
     label: "Duyệt sản phẩm trưng bày",
     icon: <FaCheckSquare />,
   },
-
   {
     to: "/admin/products",
     label: "Sản phẩm",
@@ -80,7 +79,7 @@ const menuItems = [
   },
   {
     to: "/admin/posts",
-    label: "Bài viết tin tức - sự kiện",
+    label: "Tin tức & Sự kiện",
     icon: <FaFileAlt />,
   },
   {
@@ -105,9 +104,45 @@ const menuItems = [
   },
 ];
 
+// Nhóm menu để gom gọn hiển thị
+const menuGroups = [
+  {
+    title: "Quản lý chính",
+    keys: ["/admin", "/admin/users", "/admin/enterprises"],
+  },
+  {
+    title: "Danh mục",
+    keys: [
+      "/admin/exhibition-space-categories",
+      "/admin/product-categories",
+      "/admin/news-categories",
+      "/admin/services-categories",
+    ],
+  },
+  {
+    title: "Nội dung",
+    keys: [
+      "/admin/exhibition-spaces",
+      "/admin/products",
+      "/admin/posts",
+      "/admin/services",
+      "/admin/tags",
+    ],
+  },
+  {
+    title: "Phê duyệt",
+    keys: ["/admin/rental-contracts", "/admin/exhibition-approvals"],
+  },
+  {
+    title: "Khác",
+    keys: ["/admin/violations", "/admin/feedbacks"],
+  },
+];
+
 const Sidebar = ({ collapsed, setCollapsed }) => {
   return (
     <aside className={`admin-sidebar ${collapsed ? "collapsed" : ""}`}>
+      {/* Logo */}
       <div className="admin-sidebar__logo">
         <img
           src="/logo-casta.webp"
@@ -118,24 +153,41 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
         />
       </div>
 
+      {/* Navigation */}
       <nav className="admin-sidebar__nav">
-        {menuItems.map(({ to, label, icon, end }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={end}
-            className={({ isActive }) =>
-              isActive ? "admin-sidebar__link active" : "admin-sidebar__link"
-            }
-            title={label}
+        {menuGroups.map((group) => (
+          <div
+            key={group.title}
+            className="admin-sidebar__group"
           >
-            {React.cloneElement(icon, { className: "admin-sidebar__icon" })}
-            {!collapsed && <span>{label}</span>}
-          </NavLink>
+            {!collapsed && (
+              <div className="admin-sidebar__group-title">{group.title}</div>
+            )}
+            {menuItems
+              .filter((item) => group.keys.includes(item.to))
+              .map(({ to, label, icon, end }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end={end}
+                  className={({ isActive }) =>
+                    isActive
+                      ? "admin-sidebar__link active"
+                      : "admin-sidebar__link"
+                  }
+                  title={label}
+                >
+                  {React.cloneElement(icon, {
+                    className: "admin-sidebar__icon",
+                  })}
+                  {!collapsed && <span>{label}</span>}
+                </NavLink>
+              ))}
+          </div>
         ))}
       </nav>
 
-      {/* Nút toggle nằm ngoài nav để tránh bị scroll đẩy đi */}
+      {/* Toggle */}
       <div className="admin-sidebar__toggle">
         <button
           onClick={() => setCollapsed(!collapsed)}

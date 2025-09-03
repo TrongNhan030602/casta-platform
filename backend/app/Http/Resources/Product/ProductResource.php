@@ -8,7 +8,7 @@ class ProductResource extends JsonResource
 {
     public function toArray($request): array
     {
-        $images = collect($this->images); // ✅ tránh lỗi null nếu chưa load quan hệ
+        $images = $this->images; // ✅ không query lại
 
         return [
             'id' => $this->id,
@@ -33,8 +33,8 @@ class ProductResource extends JsonResource
             'model_3d_url' => $this->model_3d_url,
             'video_url' => $this->video_url,
 
-            'tags' => $this->tags, // dạng array string ["new", "hot"]
-            'tag_enums' => $this->tag_enums, // enum chuyển từ accessor 
+            'tags' => $this->tags,
+            'tag_enums' => $this->tag_enums,
 
             'category' => [
                 'id' => $this->category_id,
@@ -49,21 +49,19 @@ class ProductResource extends JsonResource
             'images' => $images->map(fn($img) => [
                 'id' => $img->id,
                 'url' => $img->url,
-                'is_main' => $img->is_main,
+                'is_main' => (bool) $img->is_main,
             ])->values(),
 
-            'main_image' => $images->firstWhere('is_main', true)?->url ?? $images->first()?->url,
+            'main_image' => $this->main_image, // dùng accessor ở model
 
             'status' => $this->status->value,
             'approved_by' => $this->approved_by,
             'approved_at' => $this->approved_at,
-            'reason_rejected' => $this->reason_rejected ?? null,
+            'reason_rejected' => $this->reason_rejected,
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
-
-
         ];
     }
 }

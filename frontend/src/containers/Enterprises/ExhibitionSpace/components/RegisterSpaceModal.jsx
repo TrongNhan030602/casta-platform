@@ -73,14 +73,14 @@ const RegisterSpaceModal = ({ open, onClose, space, onSuccess }) => {
         <DatePicker
           label="Ngày bắt đầu"
           value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
+          onChange={setStartDate}
           min={new Date().toISOString().split("T")[0]}
         />
 
         <DatePicker
           label="Ngày kết thúc"
           value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
+          onChange={setEndDate}
           min={startDate || new Date().toISOString().split("T")[0]}
         />
 

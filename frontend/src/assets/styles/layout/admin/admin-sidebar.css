@@ -69,6 +69,17 @@
   font-size: 1.1rem;
   margin-right: 8px;
 }
+.admin-sidebar__group {
+  margin-bottom: 1rem;
+}
+
+.admin-sidebar__group-title {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #999;
+  padding: 0.5rem 1rem;
+  text-transform: uppercase;
+}
 
 /* Collapse mode */
 .admin-sidebar.collapsed .admin-sidebar__icon {
