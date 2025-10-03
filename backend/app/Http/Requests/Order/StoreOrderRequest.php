@@ -3,44 +3,41 @@
 namespace App\Http\Requests\Order;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Enums\PaymentMethod;
+use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
+use App\Enums\PaymentMethod;
+use Illuminate\Validation\Rules\Enum;
 
 class StoreOrderRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return true; // Thêm policy nếu cần
     }
 
     public function rules(): array
     {
         return [
-            'shipping_address' => ['required', 'string', 'max:500'],
-            'shipping_phone' => ['required', 'string', 'max:20'],
-            'note' => ['nullable', 'string', 'max:1000'],
+            'note' => ['nullable', 'string'],
 
-            // ✅ validate method, status theo enum
-            'payment_method' => ['sometimes', 'string', 'in:' . implode(',', PaymentMethod::values())],
-            'payment_status' => ['sometimes', 'string', 'in:' . implode(',', PaymentStatus::values())],
+            'status' => ['nullable', new Enum(OrderStatus::class)],
+            'payment_status' => ['nullable', new Enum(PaymentStatus::class)],
+            'payment_method' => ['nullable', new Enum(PaymentMethod::class)],
 
-            // Danh sách items
-            'items' => ['required', 'array', 'min:1'],
-            'items.*.product_id' => ['required', 'integer', 'exists:products,id'],
-            'items.*.quantity' => ['required', 'integer', 'min:1'],
-        ];
-    }
+            // SubOrders
+            'sub_orders' => ['required', 'array', 'min:1'],
+            'sub_orders.*.enterprise_id' => ['required', 'exists:enterprises,id'],
+            'sub_orders.*.shipping_fee' => ['required', 'numeric', 'min:0'],
+            'sub_orders.*.status' => ['nullable', new Enum(\App\Enums\SubOrderStatus::class)],
+            'sub_orders.*.tracking_number' => ['nullable', 'string'],
+            'sub_orders.*.note' => ['nullable', 'string'],
 
-    public function messages(): array
-    {
-        return [
-            'shipping_address.required' => 'Vui lòng nhập địa chỉ giao hàng.',
-            'shipping_phone.required' => 'Vui lòng nhập số điện thoại nhận hàng.',
-            'items.required' => 'Đơn hàng phải có ít nhất 1 sản phẩm.',
-            'items.*.product_id.exists' => 'Sản phẩm không tồn tại.',
-            'items.*.quantity.min' => 'Số lượng sản phẩm phải lớn hơn 0.',
-            'payment_method.in' => 'Phương thức thanh toán không hợp lệ.',
-            'payment_status.in' => 'Trạng thái thanh toán không hợp lệ.',
+            // Items
+            'sub_orders.*.items' => ['required', 'array', 'min:1'],
+            'sub_orders.*.items.*.product_id' => ['required', 'exists:products,id'],
+            'sub_orders.*.items.*.quantity' => ['required', 'integer', 'min:1'],
+            'sub_orders.*.items.*.price' => ['required', 'numeric', 'min:0'],
+            'sub_orders.*.items.*.note' => ['nullable', 'string'],
         ];
     }
 }

@@ -3,61 +3,88 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Enums\OrderStatus;
-use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
+use App\Enums\PaymentMethod;
 
 class Order extends Model
 {
-    use HasFactory, SoftDeletes;
-
-    protected $table = 'orders';
+    use SoftDeletes;
 
     protected $fillable = [
         'customer_id',
-        'total_price',
-        'discount',
-        'final_price',
+        'total_amount',
+        'shipping_fee_total',
         'status',
-        'payment_method',
         'payment_status',
-        'shipping_address',
-        'shipping_phone',
+        'payment_method',
         'note',
     ];
 
     protected $casts = [
         'status' => OrderStatus::class,
-        'payment_method' => PaymentMethod::class,
         'payment_status' => PaymentStatus::class,
-        'total_price' => 'decimal:2',
-        'discount' => 'decimal:2',
-        'final_price' => 'decimal:2',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
+        'payment_method' => PaymentMethod::class,
     ];
 
-    // Relationships
+    // Quan hệ
     public function customer()
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function items()
+    public function subOrders()
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(SubOrder::class);
     }
 
-    public function payments()
+    public function statusHistories()
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(OrderStatusHistory::class);
     }
 
-    public function histories()
+    public function transactions()
     {
-        return $this->hasMany(OrderHistory::class);
+        return $this->hasMany(Transaction::class);
+    }
+
+    // Lấy trạng thái mới nhất
+    public function latestStatus(): ?OrderStatus
+    {
+        $history = $this->statusHistories()->latest('created_at')->first();
+        return $history ? OrderStatus::from($history->status) : $this->status;
+    }
+
+    // Tính tổng tiền từ subOrders (bao gồm phí ship)
+    public function calculateTotalAmount(): float
+    {
+        return round($this->subOrders->sum(fn($subOrder) => $subOrder->sub_total + $subOrder->shipping_fee), 2);
+    }
+
+    // Tính tổng phí ship riêng
+    public function calculateTotalShippingFee(): float
+    {
+        return round($this->subOrders->sum(fn($subOrder) => $subOrder->shipping_fee), 2);
+    }
+
+
+    // Cập nhật trạng thái với kiểm tra transition
+    public function updateStatus(OrderStatus $newStatus): bool
+    {
+        if ($this->status->canTransitionTo($newStatus)) {
+            $this->status = $newStatus;
+            $this->save();
+
+            // Ghi vào lịch sử
+            $this->statusHistories()->create([
+                'status' => $newStatus->value,
+                'changed_by' => auth()->id() ?? null,
+            ]);
+
+            return true;
+        }
+
+        return false;
     }
 }

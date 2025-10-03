@@ -147,8 +147,9 @@ class User extends Authenticatable implements JWTSubject
     // Người dùng là khách hàng
     public function isCustomer(): bool
     {
-        return in_array($this->role->value, UserRole::customerRoles());
+        return $this->role === UserRole::KH;
     }
+
 
     public function canManageEnterpriseId(int $enterpriseId): bool
     {

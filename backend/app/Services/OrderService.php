@@ -1,12 +1,16 @@
 <?php
 namespace App\Services;
 
-use App\Models\Order;
-use App\Models\Product;
-use App\Enums\OrderStatus;
 use App\Interfaces\OrderInterface;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
+use App\Models\Order;
+use App\Models\SubOrder;
+use App\Models\Transaction;
+use App\Enums\OrderStatus;
+use App\Enums\TransactionStatus;
+use App\Enums\TransactionMethod;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 class OrderService
 {
@@ -17,62 +21,61 @@ class OrderService
         $this->repo = $repo;
     }
 
-    public function search(array $filters)
+    public function createOrder(array $data): Order
     {
-        return $this->repo->search($filters);
+        return $this->repo->storeOrder($data);
     }
 
-    public function find(int $id): Order
+    public function getOrderById(int $orderId): ?Order
     {
-        return $this->repo->find($id);
+        return $this->repo->getById($orderId);
     }
 
-    public function create(array $data): Order
+    public function listOrders(array $filters): LengthAwarePaginator
     {
-        $user = Auth::user();
-        $data['customer_id'] = $user->customer->id;
-
-        // ✅ dùng enum thay vì string
-        $data['status'] = OrderStatus::PENDING;
-        $data['discount'] = $data['discount'] ?? 0;
-
-        $itemsData = [];
-        $total = 0;
-
-        foreach ($data['items'] as $item) {
-            $product = Product::findOrFail($item['product_id']);
-
-            if ($product->stock < $item['quantity']) {
-                throw ValidationException::withMessages([
-                    'stock' => "Sản phẩm {$product->name} không đủ tồn kho."
-                ]);
-            }
-
-            $unitPrice = $product->discount_price ?? $product->price;
-            $lineTotal = $unitPrice * $item['quantity'];
-
-            $itemsData[] = [
-                'product_id' => $product->id,
-                'quantity' => $item['quantity'],
-                'unit_price' => $unitPrice,
-                'total_price' => $lineTotal,
-            ];
-
-            $total += $lineTotal;
-
-            $product->decrement('stock', $item['quantity']);
-        }
-
-        $data['total_price'] = $total;
-        $data['final_price'] = $total - $data['discount'];
-        $data['items'] = $itemsData;
-
-        return $this->repo->store($data);
+        return $this->repo->listOrders($filters);
     }
 
-    // ✅ chỉnh typehint để dùng enum
-    public function updateStatus(Order $order, OrderStatus $status, ?string $note = null): Order
+    public function updateOrderStatus(Order $order, string|OrderStatus $newStatus, ?int $changedBy = null): Order
     {
-        return $this->repo->updateStatus($order, $status, Auth::id(), $note);
+        return $this->repo->updateStatus($order, $newStatus, $changedBy);
+    }
+
+    public function createTransaction(Order $order, array $data, ?int $subOrderId = null): Transaction
+    {
+        return $this->repo->storeTransaction($order, $data, $subOrderId);
+    }
+
+
+    /**
+     * Xoá mềm đơn hàng
+     */
+    public function softDeleteOrder(Order $order): bool
+    {
+        return $this->repo->softDelete($order);
+    }
+
+    /**
+     * Khôi phục đơn hàng đã xóa mềm
+     */
+    public function restoreOrder(Order $order): bool
+    {
+        return $this->repo->restoreOrder($order);
+    }
+
+    /**
+     * Xoá vĩnh viễn đơn hàng
+     */
+    public function forceDeleteOrder(Order $order): bool
+    {
+        return $this->repo->forceDelete($order);
+    }
+
+    /**
+     * Tìm đơn hàng kể cả đã xóa mềm
+     */
+    public function findOrderWithTrashed(int $id): ?Order
+    {
+        return $this->repo->findWithTrashed($id);
     }
 }

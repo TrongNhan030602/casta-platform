@@ -15,17 +15,16 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BaseApiController extends Controller
 {
+    /**
+     * Bao bọc logic controller để handle exception chuẩn
+     */
     protected function safe(callable $callback): JsonResponse
     {
         try {
             return $callback();
         } catch (AuthorizationException $e) {
-            return response()->json([
-                'message' => 'Bạn không có quyền thực hiện thao tác này.',
-                'hint' => config('app.debug') ? $e->getMessage() : null,
-            ], 403);
+            return $this->forbidden($e->getMessage());
         } catch (ValidationException $e) {
-            // Trả về chi tiết lỗi để FE hiển thị
             return response()->json([
                 'message' => 'Dữ liệu không hợp lệ.',
                 'errors' => $e->errors(),
@@ -36,21 +35,21 @@ class BaseApiController extends Controller
                 'RentalContract' => 'hợp đồng thuê',
                 'ExhibitionSpace' => 'không gian triển lãm',
                 'Enterprise' => 'doanh nghiệp',
+                'Order' => 'đơn hàng',
+                'SubOrder' => 'đơn hàng con',
+                'OrderItem' => 'sản phẩm trong đơn',
+                'Transaction' => 'giao dịch',
+                'Customer' => 'khách hàng',
             ];
             $message = $translated[$model] ?? $model;
-            return response()->json(['message' => ucfirst($message) . ' không tồn tại.'], 404);
+            return $this->notFound(ucfirst($message) . ' không tồn tại.');
         } catch (HttpException $e) {
-            // Đã rõ status + message => trả trực tiếp
             return response()->json(['message' => $e->getMessage()], $e->getStatusCode());
         } catch (NotFoundHttpException $e) {
-            return response()->json(['message' => 'Không tìm thấy tài nguyên yêu cầu.'], 404);
+            return $this->notFound('Không tìm thấy tài nguyên yêu cầu.');
         } catch (RuntimeException $e) {
-            // Lỗi nghiệp vụ -> Conflict
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 409);
+            return $this->conflict($e->getMessage());
         } catch (Throwable $e) {
-            // Log lỗi để điều tra (không leak thông tin ở prod)
             Log::error('Unhandled exception', [
                 'message' => $e->getMessage(),
                 'exception' => $e,
@@ -64,6 +63,41 @@ class BaseApiController extends Controller
         }
     }
 
+    /**
+     * Trả về 404
+     */
+    protected function notFound(string $message = 'Resource not found'): JsonResponse
+    {
+        return response()->json([
+            'message' => $message,
+        ], 404);
+    }
+
+    /**
+     * Trả về 403
+     */
+    protected function forbidden(string $message = 'Bạn không có quyền truy cập.'): JsonResponse
+    {
+        return response()->json([
+            'message' => $message,
+        ], 403);
+    }
+
+
+
+    /**
+     * Trả về 409 conflict
+     */
+    protected function conflict(string $message = 'Conflict occurred'): JsonResponse
+    {
+        return response()->json([
+            'message' => $message,
+        ], 409);
+    }
+
+    /**
+     * Trả về meta cho pagination
+     */
     protected function meta($paginator): array
     {
         return [

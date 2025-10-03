@@ -2,12 +2,16 @@
 
 namespace App\Enums;
 
-enum OrderStatus: string
+enum OrderHistoryStatus: string
 {
     case PENDING = 'pending';
+    case CONFIRMED = 'confirmed';
+    case SHIPPED = 'shipped';
+    case DELIVERED = 'delivered';
+    case CANCELLED = 'cancelled';
     case PARTIALLY_DELIVERED = 'partially_delivered';
     case COMPLETED = 'completed';
-    case CANCELLED = 'cancelled';
+    case REFUNDED = 'refunded';
 
     public static function values(): array
     {
@@ -18,19 +22,13 @@ enum OrderStatus: string
     {
         return match ($this) {
             self::PENDING => 'Chờ xử lý',
+            self::CONFIRMED => 'Đã xác nhận',
+            self::SHIPPED => 'Đang giao',
+            self::DELIVERED => 'Đã giao',
+            self::CANCELLED => 'Đã huỷ',
             self::PARTIALLY_DELIVERED => 'Giao một phần',
             self::COMPLETED => 'Hoàn thành',
-            self::CANCELLED => 'Đã huỷ',
-        };
-    }
-
-    public function canTransitionTo(OrderStatus $target): bool
-    {
-        return match ($this) {
-            self::PENDING => in_array($target, [self::PARTIALLY_DELIVERED, self::COMPLETED, self::CANCELLED]),
-            self::PARTIALLY_DELIVERED => in_array($target, [self::COMPLETED, self::CANCELLED]),
-            self::COMPLETED => false,
-            self::CANCELLED => false,
+            self::REFUNDED => 'Đã hoàn tiền',
         };
     }
 }

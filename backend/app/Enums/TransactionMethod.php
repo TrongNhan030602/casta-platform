@@ -2,11 +2,12 @@
 
 namespace App\Enums;
 
-enum PaymentMethod: string
+enum TransactionMethod: string
 {
     case BANK_TRANSFER = 'bank_transfer';
     case COD = 'cod';
     case ONLINE = 'online';
+    case REFUND = 'refund';
 
     public static function values(): array
     {
@@ -19,6 +20,7 @@ enum PaymentMethod: string
             self::BANK_TRANSFER => 'Chuyển khoản',
             self::COD => 'Thanh toán khi nhận hàng',
             self::ONLINE => 'Thanh toán online',
+            self::REFUND => 'Hoàn tiền',
         };
     }
 }

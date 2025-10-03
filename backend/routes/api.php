@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\MediaCleanupController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\MediaController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\CategoryController;
@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\FeedbackController;
 use App\Http\Controllers\Api\ViolationController;
 use App\Http\Controllers\Api\EnterpriseController;
+use App\Http\Controllers\Api\MediaCleanupController;
 use App\Http\Controllers\Api\NewsCategoryController;
 use App\Http\Controllers\Api\ProductImageController;
 use App\Http\Controllers\Api\ForgotPasswordController;
@@ -706,4 +707,33 @@ Route::prefix('media')->middleware(['auth:api'])->group(function () {
     // Gán / gỡ Media vào model
     Route::post('/attach', [MediaController::class, 'attachTo']);   // POST /api/media/attach
     Route::post('/detach', [MediaController::class, 'detachFrom']); // POST /api/media/detach
+});
+
+
+// ========================== Order ==========================
+Route::prefix('orders')->middleware(['auth:api'])->group(function () {
+
+    // Danh sách đơn hàng (có filter + pagination)
+    Route::get('/', [OrderController::class, 'index']);
+
+    // Tạo đơn hàng
+    Route::post('/', [OrderController::class, 'store']);
+
+    // Lấy chi tiết đơn hàng
+    Route::get('{id}', [OrderController::class, 'show']);
+
+    // Cập nhật trạng thái đơn hàng (chưa test)
+    Route::patch('{id}/status', [OrderController::class, 'updateStatus']);
+
+    // Tạo transaction cho đơn hàng
+    Route::post('{id}/transactions', [OrderController::class, 'createTransaction']);
+
+    // Xoá mềm
+    Route::delete('{id}', [OrderController::class, 'destroy']);
+
+    // Khôi phục
+    Route::post('{id}/restore', [OrderController::class, 'restore']);
+
+    // Xoá vĩnh viễn
+    Route::delete('{id}/force', [OrderController::class, 'forceDelete']);
 });
